@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Project Ideas AI Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .features-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px 20px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-button.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .label-with-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: normal;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-container.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .result-content {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .tool-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .tool-results h4 {
+            margin-bottom: 10px;
+            color: #1565c0;
+        }
+
+        .github-project {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .github-project h5 {
+            margin-bottom: 5px;
+            color: #667eea;
+        }
+
+        .github-project p {
+            font-size: 0.9em;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .budget-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .budget-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .budget-item h5 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .budget-item .amount {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .skill-meter {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .skill-meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1565c0;
+        }
+
+        .session-info {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .session-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1> Projura AI Agent</h1>
+            <p class="subtitle">Your Intelligent Project Planning Assistant</p>
+            <div>
+                <span class="features-badge">🔍 Web Search</span>
+                <span class="features-badge">💻 GitHub Integration</span>
+                <span class="features-badge">💰 Budget Calculator</span>
+                <span class="features-badge">📊 Skill Assessment</span>
+                <span class="features-badge">💾 Session Memory</span>
+            </div>
+        </header>
+
+        <div class="session-info">
+            <span>📝 Session Active | Interactions: <span id="interaction-count">0</span></span>
+            <button class="session-btn" onclick="viewSessionSummary()">View History</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('ideas')">
+                Generate Ideas
+            </button>
+            <button class="tab-button" onclick="switchTab('roadmap')">
+                Create Roadmap
+            </button>
+            <button class="tab-button" onclick="switchTab('feasibility')">
+                Assess Feasibility
+            </button>
+            <button class="tab-button" onclick="switchTab('tools')">
+                Direct Tools
+            </button>
+        </div>
+
+        <!-- Generate Ideas Tab -->
+        <div id="ideas-tab" class="tab-content active">
+            <div class="info-box">
+                <p>🤖 AI-powered project ideas with real-time tech trend research!</p>
+            </div>
+            <form id="ideas-form">
+                <div class="form-group">
+                    <label for="domain">Domain </label>
+                    <input type="text" id="domain" required
+                        placeholder="e.g., Web Development, AI/ML, Mobile Apps, IoT">
+                </div>
+
+                <div class="form-group">
+                    <label for="skill_level">Skill Level </label>
+                    <select id="skill_level" required>
+                        <option value="">Select skill level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="constraints">Additional Constraints (Optional)</label>
+                    <textarea id="constraints"
+                        placeholder="e.g., Must be completed in 2 months, No budget for cloud services"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="use_trends" checked>
+                        <label for="use_trends" style="margin: 0;">
+                            <span class="tool-badge">WEB SEARCH</span> Include latest tech trends research
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Generate Ideas</button>
+            </form>
+
+            <div id="ideas-result" class="result-container">
+                <h3>Generated Project Ideas:</h3>
+                <div class="result-content" id="ideas-content"></div>
+            </div>
+        </div>
+
+        <!-- Create Roadmap Tab -->
+        <div id="roadmap-tab" class="tab-content">
+            <div class="info-box">
+                <p>🗺️ Get detailed roadmap with GitHub project research!</p>
+            </div>
+            <form id="roadmap-form">
+                <div class="form-group">
+                    <label for="project_desc">Project Description *</label>
+                    <textarea id="project_desc" required
+                        placeholder="Describe your project in detail. Include goals, target audience, key features."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="check_similar" checked>
+                        <label for="check_similar" style="margin: 0;">
+                            <span class="tool-badge">GITHUB</span> Search for similar projects on GitHub
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Create Roadmap</button>
+            </form>
+
+            <div id="roadmap-result" class="result-container">
+                <h3>Project Roadmap:</h3>
+                <div id="github-projects"></div>
+                <div class="result-content" id="roadmap-content"></div>
+            </div>
+        </div>
+
+        <!-- Assess Feasibility Tab -->
+        <div id="feasibility-tab" class="tab-content">
+            <div class="info-box">
+                <p>✅ Comprehensive feasibility analysis with skill assessment and budget calculation!</p>
+            </div>
+            <form id="feasibility-form">
+                <div class="form-group">
+                    <label for="feas_project_desc">Project Description *</label>
+                    <textarea id="feas_project_desc" required placeholder="Describe your project idea"></textarea>
+                </div>
+
+                <div class="two-column">
+                    <div class="form-group">
+                        <label for="available_time">Available Time </label>
+                        <input type="text" id="available_time" required placeholder="e.g., 3 months, 10 hours per week">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="project_type">Project Type </label>
+                        <select id="project_type">
+                            <option value="web_development">Web Development</option>
+                            <option value="mobile_app">Mobile App</option>
+                            <option value="ai_ml">AI/ML</option>
+                            <option value="data_science">Data Science</option>
+                            <option value="game_development">Game Development</option>
+                            <option value="iot">IoT</option>
+                            <option value="blockchain">Blockchain</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-with-badge">
+                        <label for="current_skills">Current Skills (comma-separated)</label>
+                        <span class="tool-badge">SKILL TOOL</span>
+                    </div>
+                    <textarea id="current_skills" required
+                        placeholder="e.g., Python, JavaScript, React, SQL, Git"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Budget</label>
+                    <select id="budget">
+                        <option value="Limited">Limited ($0-100)</option>
+                        <option value="Moderate">Moderate ($100-500)</option>
+                        <option value="Flexible">Flexible ($500+)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Assess Feasibility</button>
+            </form>
+
+            <div id="feasibility-result" class="result-container">
+                <h3>Feasibility Assessment:</h3>
+
+                <!-- Skill Analysis -->
+                <div id="skill-analysis" class="tool-results" style="display:none;">
+                    <h4>📊 Skill Analysis</h4>
+                    <div class="skill-meter">
+                        <div class="skill-meter-fill" id="skill-meter-fill" style="width: 0%;">0%</div>
+                    </div>
+                    <div id="skill-details"></div>
+                </div>
+
+                <!-- Budget Analysis -->
+                <div id="budget-analysis" class="tool-results" style="display:none;">
+                    <h4>💰 Budget Breakdown</h4>
+                    <div class="budget-breakdown" id="budget-breakdown"></div>
+                </div>
+
+                <!-- Main Assessment -->
+                <div class="result-content" id="feasibility-content"></div>
+            </div>
+        </div>
+
+        <!-- Direct Tools Tab -->
+        <div id="tools-tab" class="tab-content">
+            <div class="info-box">
+                <p>🛠️ Use individual tools directly for quick calculations and research!</p>
+            </div>
+
+            <h3>🔍 GitHub Project Search</h3>
+            <form id="github-search-form">
+                <div class="form-group">
+                    <label for="github_query">Search Query</label>
+                    <input type="text" id="github_query" placeholder="e.g., todo app react">
+                </div>
+                <button type="submit" class="submit-btn">Search GitHub</button>
+            </form>
+            <div id="github-search-results" class="result-container"></div>
+
+            <hr style="margin: 30px 0;">
+
+            <h3>💰 Budget Calculator</h3>
+            <form id="budget-calc-form">
+                <div class="two-column">
+                    <div class="form-group">
+                        <label for="calc_project_type">Project Type</label>
+                        <select id="calc_project_type">
+                            <option value="web_development">Web Development</option>
+                            <option value="mobile_app">Mobile App</option>
+                            <option value="ai_ml">AI/ML</option>
+                            <option value="data_science">Data Science</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="calc_duration">Duration (months)</label>
+                        <input type="number" id="calc_duration" value="3" min="1">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Calculate Budget</button>
+            </form>
+            <div id="budget-calc-results" class="result-container"></div>
+
+            <hr style="margin: 30px 0;">
+
+            <h3>📊 Skill Assessment</h3>
+            <form id="skill-assess-form">
+                <div class="form-group">
+                    <label for="assess_current">Your Skills (comma-separated)</label>
+                    <input type="text" id="assess_current" placeholder="Python, JavaScript, React">
+                </div>
+                <div class="form-group">
+                    <label for="assess_required">Required Skills (comma-separated)</label>
+                    <input type="text" id="assess_required" placeholder="Python, Django, PostgreSQL, Docker">
+                </div>
+                <button type="submit" class="submit-btn">Assess Skills</button>
+            </form>
+            <div id="skill-assess-results" class="result-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let interactionCount = 0;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateInteractionCount() {
+            interactionCount++;
+            document.getElementById('interaction-count').textContent = interactionCount;
+        }
+
+        async function viewSessionSummary() {
+            try {
+                const response = await fetch('/session_summary');
+                const data = await response.json();
+                alert(data.summary + '\n\nLast 10 interactions:\n' +
+                    data.history.map(h => `${h.action} at ${h.timestamp}`).join('\n'));
+            } catch (error) {
+                alert('Error loading session summary');
+            }
+        }
+
+        // Generate Ideas Form
+        document.getElementById('ideas-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const resultDiv = document.getElementById('ideas-result');
+            const contentDiv = document.getElementById('ideas-content');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Generating...';
+
+            contentDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Generating project ideas and researching trends...</div>';
+            resultDiv.classList.add('show');
+
+            const data = {
+                domain: document.getElementById('domain').value,
+                skill_level: document.getElementById('skill_level').value,
+                constraints: document.getElementById('constraints').value,
+                use_trends: document.getElementById('use_trends').checked
+            };
+
+            try {
+                const response = await fetch('/generate_ideas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                contentDiv.textContent = result.result;
+                updateInteractionCount();
+            } catch (error) {
+                contentDiv.textContent = 'Error: ' + error.message;
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Generate Ideas';
+        });
+
+        // Create Roadmap Form
+        document.getElementById('roadmap-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const resultDiv = document.getElementById('roadmap-result');
+            const contentDiv = document.getElementById('roadmap-content');
+            const githubDiv = document.getElementById('github-projects');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+
+            contentDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Creating roadmap and searching GitHub...</div>';
+            githubDiv.innerHTML = '';
+            resultDiv.classList.add('show');
+
+            const data = {
+                project_description: document.getElementById('project_desc').value,
+                check_similar: document.getElementById('check_similar').checked
+            };
+
+            try {
+                const response = await fetch('/create_roadmap', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Display similar projects
+                if (result.similar_projects && result.similar_projects.length > 0) {
+                    let githubHtml = '<div class="tool-results"><h4>💻 Similar Projects on GitHub:</h4>';
+                    result.similar_projects.forEach(proj => {
+                        githubHtml += `
+                            <div class="github-project">
+                                <h5>${proj.name} ⭐ ${proj.stars}</h5>
+                                <p>${proj.description}</p>
+                                <p><strong>Language:</strong> ${proj.language} | 
+                                   <a href="${proj.url}" target="_blank">View on GitHub</a></p>
+                            </div>
+                        `;
+                    });
+                    githubHtml += '</div>';
+                    githubDiv.innerHTML = githubHtml;
+                }
+
+                contentDiv.textContent = result.roadmap;
+                updateInteractionCount();
+            } catch (error) {
+                contentDiv.textContent = 'Error: ' + error.message;
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Roadmap';
+        });
+
+        // Assess Feasibility Form
+        document.getElementById('feasibility-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const resultDiv = document.getElementById('feasibility-result');
+            const contentDiv = document.getElementById('feasibility-content');
+            const skillDiv = document.getElementById('skill-analysis');
+            const budgetDiv = document.getElementById('budget-analysis');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Assessing...';
+
+            contentDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Assessing feasibility with advanced tools...</div>';
+            resultDiv.classList.add('show');
+
+            const data = {
+                project_description: document.getElementById('feas_project_desc').value,
+                available_time: document.getElementById('available_time').value,
+                current_skills: document.getElementById('current_skills').value,
+                budget: document.getElementById('budget').value,
+                project_type: document.getElementById('project_type').value
+            };
+
+            try {
+                const response = await fetch('/assess_feasibility', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                // Display skill analysis
+                if (result.skill_analysis) {
+                    const skill = result.skill_analysis;
+                    skillDiv.style.display = 'block';
+                    document.getElementById('skill-meter-fill').style.width = skill.proficiency_score + '%';
+                    document.getElementById('skill-meter-fill').textContent = skill.proficiency_score + '%';
+
+                    document.getElementById('skill-details').innerHTML = `
+                        <p><strong>Difficulty:</strong> ${skill.difficulty_level}</p>
+                        <p><strong>Matched Skills:</strong> ${skill.matched_skills.join(', ') || 'None'}</p>
+                        <p><strong>Missing Skills:</strong> ${skill.missing_skills.join(', ') || 'None'}</p>
+                        <p><strong>Learning Time:</strong> ${skill.estimated_learning_time_weeks} weeks</p>
+                        <p><strong>Recommendation:</strong> ${skill.recommendation}</p>
+                    `;
+                }
+
+                // Display budget analysis
+                if (result.budget_analysis) {
+                    const budget = result.budget_analysis;
+                    budgetDiv.style.display = 'block';
+                    document.getElementById('budget-breakdown').innerHTML = `
+                        <div class="budget-item">
+                            <h5>Total Budget</h5>
+                            <div class="amount">$${budget.total_budget}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Development</h5>
+                            <div class="amount">$${budget.breakdown.development}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Infrastructure</h5>
+                            <div class="amount">$${budget.breakdown.infrastructure}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Monthly Rate</h5>
+                            <div class="amount">$${budget.monthly_burn_rate}</div>
+                        </div>
+                    `;
+                }
+
+                contentDiv.textContent = result.assessment;
+                updateInteractionCount();
+            } catch (error) {
+                contentDiv.textContent = 'Error: ' + error.message;
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Assess Feasibility';
+        });
+
+        // GitHub Search Tool
+        document.getElementById('github-search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('github_query').value;
+            const resultDiv = document.getElementById('github-search-results');
+
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Searching GitHub...</div>';
+            resultDiv.classList.add('show');
+
+            try {
+                const response = await fetch('/tools/github_search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, max_results: 5 })
+                });
+
+                const result = await response.json();
+                let html = `<h4>${result.message}</h4>`;
+
+                result.projects.forEach(proj => {
+                    html += `
+                        <div class="github-project">
+                            <h5>${proj.name} ⭐ ${proj.stars}</h5>
+                            <p>${proj.description}</p>
+                            <p><strong>Language:</strong> ${proj.language} | 
+                               <a href="${proj.url}" target="_blank">View</a></p>
+                        </div>
+                    `;
+                });
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        });
+
+        // Budget Calculator Tool
+        document.getElementById('budget-calc-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('budget-calc-results');
+
+            resultDiv.innerHTML = '<div class="loading">Calculating...</div>';
+            resultDiv.classList.add('show');
+
+            const data = {
+                project_type: document.getElementById('calc_project_type').value,
+                duration_months: parseInt(document.getElementById('calc_duration').value),
+                team_size: 1
+            };
+
+            try {
+                const response = await fetch('/tools/budget_calculator', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                resultDiv.innerHTML = `
+                    <h4>💰 Budget Estimate</h4>
+                    <div class="budget-breakdown">
+                        <div class="budget-item">
+                            <h5>Total Budget</h5>
+                            <div class="amount">${result.total_budget}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Development</h5>
+                            <div class="amount">${result.breakdown.development}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Infrastructure</h5>
+                            <div class="amount">${result.breakdown.infrastructure}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Tools & Licenses</h5>
+                            <div class="amount">${result.breakdown.tools_and_licenses}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Contingency (20%)</h5>
+                            <div class="amount">${result.breakdown.contingency_20_percent}</div>
+                        </div>
+                        <div class="budget-item">
+                            <h5>Monthly Burn Rate</h5>
+                            <div class="amount">${result.monthly_burn_rate}</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        });
+
+        // Skill Assessment Tool
+        document.getElementById('skill-assess-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const resultDiv = document.getElementById('skill-assess-results');
+
+            resultDiv.innerHTML = '<div class="loading">Assessing...</div>';
+            resultDiv.classList.add('show');
+
+            const currentSkills = document.getElementById('assess_current').value.split(',').map(s => s.trim());
+            const requiredSkills = document.getElementById('assess_required').value.split(',').map(s => s.trim());
+
+            const data = {
+                current_skills: currentSkills,
+                required_skills: requiredSkills
+            };
+
+            try {
+                const response = await fetch('/tools/skill_assessment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                resultDiv.innerHTML = `
+                    <h4>📊 Skill Assessment Results</h4>
+                    <div class="skill-meter">
+                        <div class="skill-meter-fill" style="width: ${result.proficiency_score}%;">
+                            ${result.proficiency_score}%
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <p><strong>Difficulty Level:</strong> ${result.difficulty_level}</p>
+                        <p><strong>Matched Skills:</strong> ${result.matched_skills.join(', ') || 'None'}</p>
+                        <p><strong>Missing Skills:</strong> ${result.missing_skills.join(', ') || 'None'}</p>
+                        <p><strong>Additional Skills You Have:</strong> ${result.additional_skills.join(', ') || 'None'}</p>
+                        <p><strong>Estimated Learning Time:</strong> ${result.estimated_learning_time_weeks} weeks</p>
+                        <p><strong>Recommendation:</strong> ${result.recommendation}</p>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>
