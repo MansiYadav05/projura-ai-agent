@@ -44,15 +44,15 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 
 ### ✅ Currently Implemented
 
-1. **Agent powered by LLM** ✓
+1. **Agent powered by LLM** 
    - Uses Google's Gemini 2.5 Flash model
    - Intelligent decision-making and content generation
 
-2. **Built-in Tools** ✓
+2. **Built-in Tools** 
    - Web Search for tech trends
    - Real-time information retrieval
 
-3. **Custom Tools** ✓
+3. **Custom Tools** 
    - GitHub API integration
    - Budget calculator with cost breakdown
    - Skill assessment algorithm
@@ -72,8 +72,8 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 
 
 project-ideas-agent/
-├── app.py                    # Enhanced Flask application with tools
-├── agent.py                  # CLI version
+├── web_agent.py                    # Enhanced Flask application with tools
+├── main.py                  # CLI version
 ├── templates/
 │   └── index.html           # Enhanced web UI with tools tab
 ├── .env                     # API configuration
