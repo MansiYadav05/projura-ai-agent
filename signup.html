@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Projura Agent</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @keyframes colorShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #ff6b9d, #667eea);
+            background-size: 400% 400%;
+            animation: colorShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .signup-left {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #e94560 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-left::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        .signup-left h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-left p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+
+        .signup-left .icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .signup-right {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .signup-right h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .signup-right .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-group {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 30px;
+            cursor: pointer;
+            color: #999;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .signup-button:active {
+            transform: translateY(0);
+        }
+
+        .signup-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .login-link a:hover {
+            color: #764ba2;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-danger {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border-left: 4px solid #3c3;
+        }
+
+        .alert-info {
+            background: #eef;
+            color: #33c;
+            border-left: 4px solid #33c;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .password-requirements {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            margin: 4px 0;
+        }
+
+        .requirement i {
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .requirement.met {
+            color: #2ecc71;
+        }
+
+        .requirement.unmet {
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .signup-container {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .signup-left {
+                padding: 40px 30px;
+                min-height: 200px;
+            }
+
+            .signup-right {
+                padding: 40px 30px;
+            }
+
+            .signup-left h1 {
+                font-size: 1.8em;
+            }
+
+            .signup-right h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-container">
+        <div class="signup-left">
+            <div class="icon">
+                <i class="bi bi-rocket-takeoff"></i>
+            </div>
+            <h1>Welcome!</h1>
+            <p>Join thousands of innovators using Projura Agent to bring their project ideas to life with AI-powered
+                guidance.</p>
+        </div>
+
+        <div class="signup-right">
+            <h2>Create Account</h2>
+            <p class="subtitle">Sign up to get started</p>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-group">
+                        <input type="password" id="password" name="password" placeholder="Create a password" required>
+                        <i class="bi bi-eye password-toggle" onclick="togglePassword('password')"></i>
+                    </div>
+                    <div class="password-requirements">
+                        <div class="requirement unmet" id="req-length">
+                            <i class="bi bi-circle-fill"></i> At least 6 characters
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <div class="password-group">
+                        <input type="password" id="confirm_password" name="confirm_password"
+                            placeholder="Confirm password" required>
+                        <i class="bi bi-eye password-toggle" onclick="togglePassword('confirm_password')"></i>
+                    </div>
+                    <div class="password-requirements">
+                        <div class="requirement unmet" id="req-match">
+                            <i class="bi bi-circle-fill"></i> Passwords match
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="signup-button" id="signupBtn">Sign Up</button>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Creating your account...</p>
+                </div>
+            </form>
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Login here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const alertDiv = document.getElementById('alert');
+        const loadingDiv = document.getElementById('loading');
+
+        // Password validation feedback
+        passwordInput.addEventListener('input', updatePasswordRequirements);
+        confirmPasswordInput.addEventListener('input', updatePasswordRequirements);
+
+        function updatePasswordRequirements() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Check length
+            const lengthReq = document.getElementById('req-length');
+            if (password.length >= 6) {
+                lengthReq.classList.remove('unmet');
+                lengthReq.classList.add('met');
+                lengthReq.innerHTML = '<i class="bi bi-check-circle-fill"></i> At least 6 characters';
+            } else {
+                lengthReq.classList.remove('met');
+                lengthReq.classList.add('unmet');
+                lengthReq.innerHTML = '<i class="bi bi-circle-fill"></i> At least 6 characters';
+            }
+
+            // Check match
+            const matchReq = document.getElementById('req-match');
+            if (password && confirmPassword && password === confirmPassword) {
+                matchReq.classList.remove('unmet');
+                matchReq.classList.add('met');
+                matchReq.innerHTML = '<i class="bi bi-check-circle-fill"></i> Passwords match';
+            } else if (password && confirmPassword) {
+                matchReq.classList.remove('met');
+                matchReq.classList.add('unmet');
+                matchReq.innerHTML = '<i class="bi bi-circle-fill"></i> Passwords match';
+            } else {
+                matchReq.classList.remove('met');
+                matchReq.classList.add('unmet');
+                matchReq.innerHTML = '<i class="bi bi-circle-fill"></i> Passwords match';
+            }
+        }
+
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = event.target;
+
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        function showAlert(message, type = 'danger') {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert show alert-${type}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm_password = document.getElementById('confirm_password').value;
+
+            // Validation
+            if (!name || !email || !password || !confirm_password) {
+                showAlert('All fields are required', 'danger');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters', 'danger');
+                return;
+            }
+
+            if (password !== confirm_password) {
+                showAlert('Passwords do not match', 'danger');
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+            document.getElementById('signupBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        confirm_password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    // Redirect to email verification page
+                    setTimeout(() => {
+                        // Store email in sessionStorage for verification page
+                        sessionStorage.setItem('verification_email', email);
+                        window.location.href = '/verify-email';
+                    }, 1500);
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            } catch (error) {
+                showAlert('An error occurred. Please try again.', 'danger');
+                console.error('Error:', error);
+            } finally {
+                loadingDiv.style.display = 'none';
+                document.getElementById('signupBtn').disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

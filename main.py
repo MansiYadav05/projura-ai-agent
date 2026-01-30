@@ -1,6 +1,6 @@
 """
 Project Ideas AI Agent
-Main application file with ADK Web UI integration
+
 """
 
 import os
