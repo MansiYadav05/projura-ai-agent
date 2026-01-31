@@ -840,6 +840,10 @@ def logout_old():
 @token_required
 def generate_ideas():
     """API endpoint for generating project ideas"""
+    # Check login
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+    
     data = request.get_json(force=True)
     domain = data.get('domain', '')
     skill_level = data.get('skill_level', '')
@@ -862,6 +866,10 @@ def generate_ideas():
 @token_required
 def create_roadmap():
     """API endpoint for creating project roadmap"""
+    # Check login
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+    
     data = request.get_json(force=True)
     project_description = data.get('project_description', '')
     check_similar = data.get('check_similar', True)
@@ -882,6 +890,10 @@ def create_roadmap():
 @token_required
 def assess_feasibility():
     """API endpoint for assessing project feasibility"""
+    # Check login
+    if not session.get('logged_in'):
+        return jsonify({'error': 'Not authenticated'}), 401
+    
     data = request.get_json(force=True)
     project_description = data.get('project_description', '')
     available_time = data.get('available_time', '')
