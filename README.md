@@ -88,7 +88,7 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 
 ## Project Structure
 
-
+```
 projura-agent/
 ├── main.py                    # CLI version of the agent
 ├── web_agent.py               # Flask web application with auth & tools
@@ -107,7 +107,7 @@ projura-agent/
 ├── LICENSE                    # MIT License
 ├── README.md                  # This file
 └── __pycache__/               # Python cache directory
-
+```
 
 
 ## 🚀 Quick Start
@@ -139,14 +139,14 @@ pip install -r requirements.txt
 
 Create a `.env` file in the project root:
 
-
+```
 GOOGLE_API_KEY=your_actual_api_key_here
 JWT_SECRET_KEY=your_secret_key_for_jwt_tokens
 SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SMTP_EMAIL=your_email@gmail.com
 SMTP_PASSWORD=your_app_password
-
+```
 
 ### 4. Run the Application
 
@@ -446,7 +446,7 @@ CREATE TABLE email_verification (
 
 ### System Architecture
 
-
+```
 ┌────────────────────────────────────────────────────────────────┐
 │                    Projura AI Agent System                     │
 ├────────────────────────────────────────────────────────────────┤
@@ -491,11 +491,11 @@ CREATE TABLE email_verification (
 │  └───────────────────────────────────────────────────────┘     │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘
-
+```
 
 ### Data Flow Diagram
 
-
+```
 1. User Registration/Login
    ├─ Email & Password Validation
    ├─ Bcrypt Hash Verification
@@ -528,11 +528,11 @@ CREATE TABLE email_verification (
    ├─ Retrieve from DB for user
    ├─ Filter & format
    └─ Return to client
-
+```
 
 ### Tools Architecture
 
-
+```
 ┌─────────────────────────────────────────┐
 │           AI Agent (Gemini)             │
 │                                         │
@@ -556,8 +556,7 @@ CREATE TABLE email_verification (
 │  └─────────────────────────────────┘    │
 │                                         │
 └─────────────────────────────────────────┘
-
-
+```
 
 ## 🎓 Learning Outcomes
 
@@ -618,7 +617,7 @@ By examining this project, you'll learn:
    6. Review Session Summary → Refine approach
    ```
 
-## 🔄 Future Enhancements
+##  Future Enhancements
 
 ### Ready to Implement
 - [ ] **Multi-agent System**: Separate agents for ideas, roadmaps, and feasibility
