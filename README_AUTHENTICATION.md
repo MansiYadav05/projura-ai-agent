@@ -12,7 +12,7 @@ A **production-ready, email-verified authentication system** has been successful
 ## 🎯 What's New
 
 ### 1. User Registration Flow
-```
+
 Sign Up Page (/signup)
     ↓ User enters email, name, password
     ↓ System validates inputs
@@ -21,66 +21,50 @@ Sign Up Page (/signup)
     ↓ Verification code generated
     ↓ Email sent with verification code
     ↓ Redirected to /verify-email
-```
+
 
 ### 2. Email Verification Flow
-```
+
 Verify Email Page (/verify-email)
     ↓ User enters 6-digit code
     ↓ Code validated (10-min expiration)
     ↓ Email marked as verified
     ↓ Welcome email sent
     ↓ Redirected to /login
-```
+
 
 ### 3. Secure Login Flow
-```
+
 Login Page (/login)
     ↓ User enters verified email
     ↓ Password verified with bcrypt
     ↓ JWT token generated
     ↓ Session created
     ↓ Redirected to /dashboard
-```
+
 
 ## 📦 What's Included
 
-### New Files
-| File | Purpose |
-|------|---------|
-| `email_service.py` | Email sending and verification code management |
-| `templates/signup.html` | User registration interface |
+### Files
+| File                            Purpose           |
+|-------------------------------|-------------------|
+| `email_service.py`             | Email sending and verification code management |
+| `templates/signup.html`       | User registration interface |
 | `templates/verify_email.html` | Email verification interface |
-| `AUTHENTICATION_GUIDE.md` | Complete technical documentation |
-| `QUICKSTART_AUTH.md` | Step-by-step setup and testing |
-| `IMPLEMENTATION_SUMMARY_AUTH.md` | Implementation details and features |
 
-### Modified Files
-| File | Changes |
-|------|---------|
-| `requirements.txt` | Added `bcrypt` and `email-validator` |
-| `database.py` | Added `users` and `email_verification` tables |
-| `web_agent.py` | Added 8 new authentication routes |
-| `templates/login.html` | Updated to use email (not username) |
-
-### Database Tables
-| Table | Purpose |
-|-------|---------|
-| `users` | User accounts with verification status |
-| `email_verification` | Verification codes with expiration |
 
 ## 🚀 Getting Started
 
 ### Step 1: Install Dependencies
-```bash
+bash
 cd projura-agent
 pip install -r requirements.txt
-```
+
 
 ### Step 2: Start the Application
-```bash
+bash
 python web_agent.py
-```
+
 
 ### Step 3: Access the Application
 - **Sign Up**: http://localhost:5000/signup
@@ -117,14 +101,6 @@ python web_agent.py
 - ✅ **Well-Documented** - Code and setup documentation
 - ✅ **Easy Integration** - Ready to use with existing features
 
-## 📚 Documentation
-
-| Document | Purpose |
-|----------|---------|
-| `AUTHENTICATION_GUIDE.md` | Complete technical reference |
-| `QUICKSTART_AUTH.md` | Quick setup and testing guide |
-| `IMPLEMENTATION_SUMMARY_AUTH.md` | Implementation details |
-| Code Comments | Inline documentation |
 
 ## 🧪 Testing
 
@@ -171,20 +147,18 @@ The system works out-of-the-box without any email configuration:
 
 ### Real Email (Gmail Example)
 Create a `.env` file:
-```env
+
 SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
 SENDER_EMAIL=your-email@gmail.com
 SENDER_PASSWORD=your-app-password
 JWT_SECRET_KEY=your-secret-key
-```
 
-[See Gmail App Password setup in QUICKSTART_AUTH.md]
 
 ## 📊 Database Schema
 
 ### users Table
-```sql
+sql
 id (PRIMARY KEY)
 email (UNIQUE)
 name
@@ -192,17 +166,17 @@ password_hash
 is_verified (0 or 1)
 created_at (TIMESTAMP)
 updated_at (TIMESTAMP)
-```
+
 
 ### email_verification Table
-```sql
+
 id (PRIMARY KEY)
 email (FOREIGN KEY to users)
 verification_code
 created_at (TIMESTAMP)
 expires_at (TIMESTAMP)
 is_used (0 or 1)
-```
+
 
 ## 🔒 Security Features
 
