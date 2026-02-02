@@ -408,7 +408,7 @@ Example Flow for Feasibility:
 
 ### Memory System
 
-
+```
 -- Users table stores account information
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -439,7 +439,7 @@ CREATE TABLE email_verification (
     expires_at TIMESTAMP,
     is_used BOOLEAN
 )
-
+```
 
 
 ## 💻 Technical Architecture
