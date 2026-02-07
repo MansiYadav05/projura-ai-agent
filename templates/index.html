@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Project Ideas AI Agent</title>
+    <title>Projura AI Agent</title>
     <style>
         * {
             margin: 0;
@@ -42,6 +42,37 @@
             text-align: center;
             color: white;
             margin-bottom: 30px;
+        }
+
+        .logo-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin: 0 auto 14px;
+            max-width: 520px;
+        }
+
+        .logo-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .logo-badge img {
+            width: 28px;
+            height: 28px;
+        }
+
+        .logo-badge:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
@@ -532,6 +563,16 @@
             .two-column {
                 grid-template-columns: 1fr;
             }
+
+            .logo-badge {
+                width: 45px;
+                height: 45px;
+            }
+
+            .logo-badge img {
+                width: 27px;
+                height: 27px;
+            }
         }
     </style>
 </head>
@@ -539,7 +580,24 @@
 <body>
     <div class="container">
         <header>
-            <h1>🚀 Enhanced Project Ideas AI Agent</h1>
+            <div class="logo-strip">
+                <div class="logo-badge">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python logo" loading="lazy">
+                </div>
+                <div class="logo-badge">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript logo" loading="lazy">
+                </div>
+                <div class="logo-badge">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5 logo" loading="lazy">
+                </div>
+                <div class="logo-badge">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3 logo" loading="lazy">
+                </div>
+                <div class="logo-badge">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React logo" loading="lazy">
+                </div>
+            </div>
+            <h1>Projura - Project AI Agent</h1>
             <p class="subtitle">AI-Powered Project Planning with Advanced Tools</p>
             <br>
             <div>

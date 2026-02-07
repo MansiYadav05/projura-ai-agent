@@ -5,13 +5,3 @@ requests==2.31.0
 PyJWT==2.8.0
 email-validator==2.1.0
 bcrypt==4.1.2
-
-
-Add SendGrid email service support for Render deployment
-
-- Updated email_service.py to support SendGrid API
-- Falls back to Gmail SMTP if SendGrid not configured
-- Added mock mode for local testing
-- Created SENDGRID_SETUP.md with step-by-step instructions
-- Created SENDGRID_QUICKSTART.md for quick reference
-- Updated .env.example with SendGrid configuration

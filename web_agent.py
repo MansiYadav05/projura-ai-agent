@@ -1,5 +1,4 @@
-""" Project Ideas AI Agent using Flask with Built-in Tools, Custom Tools, and Improved Memory
-"""
+""" Project Ideas AI Agent using Flask with Built-in Tools, Custom Tools, and Improved Memory """
 
 from flask import Flask, render_template, request, jsonify, session, redirect
 import os
@@ -33,7 +32,7 @@ JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key-change-in-producti
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24
 
-# In-memory storage for sessions (use database in production)
+# In-memory storage for sessions
 SESSION_STORE = {}
 USER_PREFERENCES = {}
 
@@ -602,7 +601,7 @@ def signup():
     
     # Generate and send verification code
     code = email_service.generate_verification_code()
-    expires_at = email_service.get_expiration_time(minutes=10)
+    expires_at = email_service.get_expiration_time(minutes=20)
     
     code_stored = db.create_verification_code(email, code, expires_at)
     
