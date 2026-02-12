@@ -606,7 +606,7 @@
             const lastAccessedDate = new Date(data.last_accessed).toLocaleString();
 
             sessionInfo.innerHTML = `
-                <h3>📊 Session Information</h3>
+                <h3>Session Information</h3>
                 <p>
                     <strong style="color: #667eea;">Session ID:</strong> ${data.session_id}<br>
                     <strong style="color: #667eea;">Created:</strong> ${createdDate}<br>
@@ -620,7 +620,7 @@
             const container = document.getElementById('history-container');
 
             if (!history || history.length === 0) {
-                container.innerHTML = '<div class="no-history">📭 No conversation history yet. Start by using the dashboard!</div>';
+                container.innerHTML = '<div class="no-history"> No conversation history yet. Start by using the dashboard!</div>';
                 return;
             }
 
@@ -636,7 +636,7 @@
                         <div class="history-item-header">
                             <div>
                                 <span class="history-action">${actionLabel}</span>
-                                <div class="history-time">⏰ ${timestamp}</div>
+                                <div class="history-time"> ${timestamp}</div>
                             </div>
                         </div>
                         
@@ -655,8 +655,7 @@
                         ` : ''}
                         
                         <div class="history-item-actions">
-                            <button class="history-item-btn" onclick="copyToClipboard(${index})"> Copy</button>
-                            <button class="history-item-btn" onclick="expandItem(${index})"> View Full</button>
+                            <button class="history-item-btn" onclick="copyToClipboard(${index})"> Copy </button>
                         </div>
                     </div>
                 `;
@@ -720,12 +719,6 @@
             });
         }
 
-        function expandItem(index) {
-            const item = fullHistory[index];
-            const output = typeof item.output === 'string' ? item.output : JSON.stringify(item.output, null, 2);
-
-            alert(`ACTION: ${item.action}\nTIME: ${new Date(item.timestamp).toLocaleString()}\n\nINPUT:\n${JSON.stringify(item.input, null, 2)}\n\nOUTPUT:\n${output}`);
-        }
 
         function showNotification(message) {
             const notification = document.createElement('div');
