@@ -14,9 +14,17 @@
         }
 
         @keyframes colorShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes slideIn {
@@ -24,6 +32,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -246,8 +255,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .back-link {
@@ -286,6 +300,12 @@
             }
         }
     </style>
+    <!-- CORS Validator for cross-origin request validation -->
+     <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
+     <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
+    <script src="static/cors_validator.js"></script>
+    <!-- JWT Manager for authentication token handling -->
+    <script src="static/jwt_manager.js"></script>
 </head>
 
 <body>
@@ -308,7 +328,8 @@
         <form id="verifyForm">
             <div class="form-group">
                 <label for="codeInput">Verification Code</label>
-                <textarea id="codeInput" name="code" class="code-textarea" placeholder="Paste your 6-digit code here" required></textarea>
+                <textarea id="codeInput" name="code" class="code-textarea" placeholder="Paste your 6-digit code here"
+                    required></textarea>
                 <p style="font-size: 0.85em; color: #999; margin-top: 8px;">
                     <i class="bi bi-info-circle"></i> The code was sent to your email and expires in 10 minutes
                 </p>

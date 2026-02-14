@@ -49,7 +49,7 @@ class JWTManager {
     }
 
     /**
-     * Make authenticated API request
+     * Make authenticated API request with CORS validation
      * @param {string} url - API endpoint
      * @param {object} options - Fetch options
      * @returns {Promise} Fetch promise
@@ -60,6 +60,15 @@ class JWTManager {
             ...options.headers
         };
 
+        // Use CORS-validated fetch if available
+        if (typeof CORSValidator !== 'undefined') {
+            return CORSValidator.fetchWithCORS(url, {
+                ...options,
+                headers
+            });
+        }
+
+        // Fallback to regular fetch
         return fetch(url, {
             ...options,
             headers
@@ -144,7 +153,7 @@ class JWTManager {
     }
 }
 
-// Example usage helper function
+// Example usage helper function with CORS validation
 async function callAPI(endpoint, method = 'GET', data = null) {
     try {
         const options = {
@@ -156,7 +165,13 @@ async function callAPI(endpoint, method = 'GET', data = null) {
             options.body = JSON.stringify(data);
         }
 
-        const response = await fetch(endpoint, options);
+        // Use CORS validator if available
+        let response;
+        if (typeof CORSValidator !== 'undefined') {
+            response = await CORSValidator.fetchWithCORS(endpoint, options);
+        } else {
+            response = await fetch(endpoint, options);
+        }
 
         // If token expired, redirect to login
         if (response.status === 401) {
