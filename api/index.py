@@ -895,6 +895,7 @@ def firebase_session():
         }), 500
 
 
+@app.route('/dashboard', methods=['GET'])
 def index():
     """Render the main dashboard page"""
     # Check if logged in (session-based check)
