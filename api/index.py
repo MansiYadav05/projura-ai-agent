@@ -16,12 +16,31 @@ import bcrypt
 from email_validator import validate_email, EmailNotValidError
 from email_service import email_service
 from cors_handler import cors_required, add_cors_headers, validate_origin
-
+import json
 
 load_dotenv()
 
+# Custom JSON encoder to handle non-serializable objects
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        """Handle non-JSON-serializable objects"""
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        elif isinstance(obj, timedelta):
+            return str(obj)
+        elif obj is None:
+            return None
+        elif hasattr(obj, '__dict__'):
+            return obj.__dict__
+        else:
+            try:
+                return str(obj)
+            except:
+                return None
+
 app = Flask(__name__, template_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates')), static_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static')),
     static_url_path='/static')
+app.json_encoder = CustomJSONEncoder
 app.secret_key = secrets.token_hex(16)
 app.permanent_session_lifetime = timedelta(days=7)  
 
@@ -114,6 +133,67 @@ def token_required(f):
         return f(*args, **kwargs)
     
     return decorated
+
+
+def sanitize_for_json(obj: Any, max_depth: int = 10, visited: set = None) -> Any:
+    """
+    Recursively sanitize objects for JSON serialization
+    Handles datetime, non-serializable objects, and circular references
+    """
+    if visited is None:
+        visited = set()
+    
+    if max_depth <= 0:
+        return None
+    
+    # Handle None
+    if obj is None:
+        return None
+    
+    # Check for circular references
+    obj_id = id(obj)
+    if obj_id in visited:
+        return None
+    
+    # Handle primitives
+    if isinstance(obj, (str, int, float, bool)):
+        return obj
+    
+    # Handle datetime
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    
+    if isinstance(obj, timedelta):
+        return str(obj)
+    
+    # Handle lists
+    if isinstance(obj, list):
+        visited.add(obj_id)
+        result = [sanitize_for_json(item, max_depth - 1, visited) for item in obj]
+        visited.remove(obj_id)
+        return result
+    
+    # Handle dicts
+    if isinstance(obj, dict):
+        visited.add(obj_id)
+        result = {}
+        for key, value in obj.items():
+            try:
+                result[str(key)] = sanitize_for_json(value, max_depth - 1, visited)
+            except:
+                result[str(key)] = None
+        visited.remove(obj_id)
+        return result
+    
+    # Handle objects with __dict__
+    if hasattr(obj, '__dict__'):
+        visited.add(obj_id)
+        result = sanitize_for_json(obj.__dict__, max_depth - 1, visited)
+        visited.remove(obj_id)
+        return result
+    
+    # Fallback
+    return str(obj)
 
 
 class BudgetCalculatorTool:
@@ -562,7 +642,7 @@ def login_page():
     if session.get('logged_in'):
         return redirect('/dashboard')
     
-    return render_template('login.html')
+    return render_template('login.html',firebase_config=firebase_config)
 
 
 @app.route('/signup', methods=['GET'])
@@ -642,72 +722,9 @@ def signup():
     }), 201
 
 
-@app.route('/api/verify-email', methods=['POST'])
-def verify_email():
-    """Verify email with the code sent to user"""
-    data = request.get_json(force=True)
-    
-    email = data.get('email', '').strip().lower()
-    code = data.get('code', '').strip()
-    
-    # Validate inputs
-    if not email or not code:
-        return jsonify({'success': False, 'message': 'Email and verification code are required'}), 400
-    
-    # Check if user exists
-    user = db.get_user_by_email(email)
-    if not user:
-        return jsonify({'success': False, 'message': 'User not found'}), 404
-    
-    # Verify code
-    code_valid = db.verify_code(email, code)
-    
-    if not code_valid:
-        return jsonify({'success': False, 'message': 'Invalid or expired verification code'}), 400
-    
-    # Mark email as verified
-    verified = db.verify_user_email(email)
-    
-    if not verified:
-        return jsonify({'success': False, 'message': 'Failed to verify email'}), 500
-    
-    # Send welcome email
-    email_service.send_welcome_email(email, user['name'])
-    
-    return jsonify({
-        'success': True,
-        'message': 'Email verified successfully! You can now login.',
-        'email': email
-    }), 200
-
-
-@app.route('/api/resend-code', methods=['POST'])
-def resend_code():
-    """Resend verification code to email"""
-    data = request.get_json(force=True)
-    email = data.get('email', '').strip().lower()
-    
-    if not email:
-        return jsonify({'success': False, 'message': 'Email is required'}), 400
-    
-    user = db.get_user_by_email(email)
-    if not user:
-        return jsonify({'success': False, 'message': 'User not found'}), 404
-    
-    if user['is_verified']:
-        return jsonify({'success': False, 'message': 'Email is already verified'}), 400
-    
-    # Generate new verification code
-    code = email_service.generate_verification_code()
-    expires_at = email_service.get_expiration_time(minutes=20)
-    
-    db.create_verification_code(email, code, expires_at)
-    email_service.send_verification_email(email, user['name'], code)
-    
-    return jsonify({
-        'success': True,
-        'message': 'Verification code resent to your email'
-    }), 200
+# Email verification is now handled by Firebase authentication system
+# Firebase sends verification links directly to user emails
+# No backend verification endpoints needed
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -773,13 +790,8 @@ def login():
     }), 200
 
 
-@app.route('/verify-email', methods=['GET'])
-def verify_email_page():
-    """Render email verification page"""
-    if session.get('logged_in'):
-        return redirect('/dashboard')
-    
-    return render_template('verify_email.html', firebase_config=firebase_config)
+# Email verification page is now handled by Firebase
+# Users click the link in their Firebase verification email
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -834,7 +846,55 @@ def login_old():
         'token': token
     })
 
-@app.route('/dashboard', methods=['GET'])
+
+@app.route('/api/auth/firebase-session', methods=['POST'])
+def firebase_session():
+    """Establish Flask session after Firebase authentication
+    
+    Called from frontend after successful Firebase login to sync with backend session
+    Expects Firebase user info in request body
+    """
+    try:
+        data = request.get_json()
+        email = data.get('email', '').strip().lower()
+        display_name = data.get('displayName', 'User')
+        uid = data.get('uid')
+        
+        if not email or not uid:
+            return jsonify({
+                'success': False,
+                'message': 'Email and UID are required'
+            }), 400
+        
+        # Initialize session to persist authentication
+        if 'session_id' not in session:
+            session['session_id'] = secrets.token_hex(16)
+        
+        # Store Firebase user info in session
+        session['email'] = email
+        session['name'] = display_name
+        session['firebase_uid'] = uid
+        session['logged_in'] = True
+        session['auth_method'] = 'firebase'
+        
+        print(f"✅ Firebase session established for: {email}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Session established',
+            'redirect': '/dashboard',
+            'email': email,
+            'name': display_name
+        }), 200
+        
+    except Exception as error:
+        print(f"❌ Firebase session error: {str(error)}")
+        return jsonify({
+            'success': False,
+            'message': f'Session error: {str(error)}'
+        }), 500
+
+
 def index():
     """Render the main dashboard page"""
     # Check if logged in (session-based check)
@@ -875,7 +935,7 @@ def generate_ideas():
         result
     )
     
-    return jsonify({'result': result})
+    return jsonify({'result': sanitize_for_json(result)})
 
 @app.route('/create_roadmap', methods=['POST'])
 @token_required
@@ -895,7 +955,7 @@ def create_roadmap():
         result['roadmap']
     )
     
-    return jsonify(result)
+    return jsonify(sanitize_for_json(result))
 
 @app.route('/assess_feasibility', methods=['POST'])
 @token_required
@@ -921,7 +981,7 @@ def assess_feasibility():
         result['assessment']
     )
     
-    return jsonify(result)
+    return jsonify(sanitize_for_json(result))
 
 @app.route('/session_summary', methods=['GET'])
 def get_session_summary():
@@ -929,11 +989,11 @@ def get_session_summary():
     summary = SessionManager.get_conversation_summary(session.get('session_id', ''))
     session_data = SessionManager.get_or_create_session(session.get('session_id', ''))
     
-    return jsonify({
+    return jsonify(sanitize_for_json({
         'summary': summary,
         'total_interactions': len(session_data['conversation_history']),
         'history': session_data['conversation_history'][-10:]  # Last 10 interactions
-    })
+    }))
 
 @app.route('/preferences', methods=['GET', 'POST'])
 def manage_preferences():
@@ -958,7 +1018,7 @@ def search_github():
     max_results = data.get('max_results', 5)
     
     result = agent.github_tool.search_similar_projects(query, max_results)
-    return jsonify(result)
+    return jsonify(sanitize_for_json(result))
 
 @app.route('/tools/budget_calculator', methods=['POST'])
 @token_required
@@ -970,7 +1030,7 @@ def calculate_budget():
     team_size = data.get('team_size', 1)
     
     result = agent.budget_tool.calculate_budget(project_type, duration, team_size)
-    return jsonify(result)
+    return jsonify(sanitize_for_json(result))
 
 @app.route('/tools/skill_assessment', methods=['POST'])
 @token_required
@@ -981,7 +1041,7 @@ def assess_skills():
     required_skills = data.get('required_skills', [])
     
     result = agent.skill_tool.assess_skills(current_skills, required_skills)
-    return jsonify(result)
+    return jsonify(sanitize_for_json(result))
 
 @app.route('/history')
 def history_page():

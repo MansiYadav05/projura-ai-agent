@@ -529,14 +529,17 @@
 
     <!-- Firebase SDK v9+ (Modular) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { initializeApp, getApps, getApp }
+            from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         // Firebase configuration from Flask backend
         const firebaseConfig = {{ firebase_config | tojson }};
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        const app = !getApps().length
+            ? initializeApp(firebaseConfig)
+            : getApp();
         const auth = getAuth(app);
 
         // Export for use in auth.js
@@ -545,7 +548,7 @@
     </script>
 
     <!-- Firebase Authentication Module -->
-    <script type="module" src="static/auth.js"></script>
+    <script type="module" src="../static/auth.js"></script>
 
     <script>
         // Toggle password visibility
@@ -614,13 +617,14 @@
 
             try {
                 // Import loginUser from auth.js
-                const { loginUser } = await import('static/auth.js');
+                const { loginUser } = await import('../static/auth.js');
 
                 // Call Firebase login
                 const result = await loginUser(email, password);
 
-                if (result.success) {
-                    showSuccess('Login successful! Redirecting...');
+                // Check if login was successful (has user object)
+                if (result && result.user) {
+                    showSuccess('Login successful! Establishing session...');
 
                     // Store remember me preference
                     if (remember) {
@@ -629,10 +633,40 @@
                         localStorage.removeItem('remember_email');
                     }
 
-                    // Redirect to dashboard after 1 second
-                    setTimeout(() => {
-                        window.location.href = '/dashboard';
-                    }, 1000);
+                    // Establish Flask session with Firebase user info
+                    try {
+                        const sessionResponse = await fetch('/api/auth/firebase-session', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: result.user.email,
+                                displayName: result.user.displayName || 'User',
+                                uid: result.user.uid,
+                                emailVerified: result.user.emailVerified
+                            })
+                        });
+
+                        const sessionData = await sessionResponse.json();
+
+                        if (sessionData.success) {
+                            console.log('✅ Session established');
+                            // Redirect to dashboard after session is set
+                            setTimeout(() => {
+                                window.location.href = '/dashboard';
+                            }, 500);
+                        } else {
+                            showError('Failed to establish session: ' + sessionData.message);
+                            loginBtn.disabled = false;
+                            loginBtn.textContent = 'Login';
+                        }
+                    } catch (sessionError) {
+                        console.error('Session error:', sessionError);
+                        showError('Failed to establish session. Please try again.');
+                        loginBtn.disabled = false;
+                        loginBtn.textContent = 'Login';
+                    }
 
                 } else {
                     showError(result.message || 'Login failed. Please try again.');
@@ -656,6 +690,26 @@
                 document.getElementById('remember').checked = true;
             }
         });
+
+        // Monitor authentication state changes during login
+        (async () => {
+            try {
+                const { onAuthStateChanged, auth } = await import('../static/auth.js');
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        console.log('🔐 User authenticated:', user.email);
+                        console.log('📧 Email verified:', user.emailVerified);
+                        console.log('👤 Display name:', user.displayName);
+                        // Additional actions on successful authentication
+                    } else {
+                        console.log('ℹ️ User signed out or not authenticated');
+                    }
+                });
+            } catch (error) {
+                console.warn('⚠️ Could not set up auth state listener:', error.message);
+            }
+        })();
     </script>
 </body>
 

@@ -356,14 +356,17 @@
 
     <!-- Firebase SDK v9+ (Modular) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { initializeApp, getApps, getApp } 
+from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
         // Firebase configuration from Flask backend
         const firebaseConfig = {{ firebase_config | tojson }};
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        const app = !getApps().length
+  ? initializeApp(firebaseConfig)
+  : getApp();
         const auth = getAuth(app);
 
         // Export for use in auth.js
@@ -372,7 +375,7 @@
     </script>
 
     <!-- Firebase Authentication Module -->
-    <script type="module" src="static/auth.js"></script>
+    <script type="module" src="../static/auth.js"></script>
 
     <script>
         const form = document.getElementById('verifyForm');
@@ -391,7 +394,7 @@
             // If not found, try to get from Firebase auth
             if (!verificationEmail) {
                 try {
-                    const { getCurrentUser } = await import('static/auth.js');
+                    const { getCurrentUser } = await import('../static/auth.js');
                     const user = await getCurrentUser();
                     if (user && user.email) {
                         verificationEmail = user.email;
@@ -442,7 +445,7 @@
 
             try {
                 // Import verifyEmailWithCode from auth.js
-                const { verifyEmailWithCode, isEmailVerified, getCurrentUser } = await import('static/auth.js');
+                const { verifyEmailWithCode, isEmailVerified, getCurrentUser } = await import('../static/auth.js');
 
                 // Call Firebase email verification
                 const result = await verifyEmailWithCode(code);
@@ -492,7 +495,7 @@
 
             try {
                 // Import sendVerificationEmail from auth.js
-                const { getCurrentUser, sendVerificationEmail } = await import('static/auth.js');
+                const { getCurrentUser, sendVerificationEmail } = await import('../static/auth.js');
 
                 // Get current user
                 const user = await getCurrentUser();

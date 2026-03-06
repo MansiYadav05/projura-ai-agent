@@ -15,7 +15,6 @@ import {
     sendEmailVerification,
     applyActionCode,
     checkActionCode,
-    currentUser,
     onAuthStateChanged,
     sendPasswordResetEmail,
     updateProfile
@@ -392,11 +391,12 @@ function getFirebaseErrorMessage(errorCode) {
 
 /**
  * EXPORT ALL FUNCTIONS
+ * Note: Other exports are already declared as named exports above
+ * Only exporting additional Firebase utilities here
  */
 export {
     auth,
-    onAuthStateChanged,
-    getCurrentUser
+    onAuthStateChanged
 };
 
 /**
