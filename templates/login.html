@@ -455,8 +455,8 @@
         }
     </style>
     <!-- CORS Validator for cross-origin request validation -->
-     <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
-     <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
     <script src="static/cors_validator.js"></script>
     <!-- JWT Manager for authentication token handling -->
     <script src="static/jwt_manager.js"></script>
@@ -527,6 +527,26 @@
         </div>
     </div>
 
+    <!-- Firebase SDK v9+ (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Firebase configuration from Flask backend
+        const firebaseConfig = {{ firebase_config | tojson }};
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Export for use in auth.js
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+    </script>
+
+    <!-- Firebase Authentication Module -->
+    <script type="module" src="static/auth.js"></script>
+
     <script>
         // Toggle password visibility
         function togglePassword(event) {
@@ -573,11 +593,6 @@
             }, 3000);
         }
 
-        // Show signup message
-        function showSignupMessage() {
-            window.location.href = '/signup';
-        }
-
         // Handle login form submission
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -595,68 +610,39 @@
 
             // Disable button during login
             loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';;
+            loginBtn.textContent = 'Logging in...';
 
             try {
-                // Send login request to backend
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password,
-                        remember: remember
-                    })
-                });
+                // Import loginUser from auth.js
+                const { loginUser } = await import('static/auth.js');
 
-                const data = await response.json();
+                // Call Firebase login
+                const result = await loginUser(email, password);
 
-                if (data.success) {
-                    // Login successful
+                if (result.success) {
                     showSuccess('Login successful! Redirecting...');
 
-                    // Store JWT token in localStorage
-                    if (data.token) {
-                        localStorage.setItem('jwt_token', data.token);
-                        localStorage.setItem('email', data.email);
-                        localStorage.setItem('name', data.name);
-                    }
-
-                    // Store session if remember me is checked
+                    // Store remember me preference
                     if (remember) {
                         localStorage.setItem('remember_email', email);
+                    } else {
+                        localStorage.removeItem('remember_email');
                     }
 
-                    // Redirect to main application after 1 second
+                    // Redirect to dashboard after 1 second
                     setTimeout(() => {
-                        window.location.href = data.redirect || '/dashboard';
+                        window.location.href = '/dashboard';
                     }, 1000);
 
-                } else if (response.status === 403) {
-                    // Email not verified
-                    showError('Email not verified. Please check your email for the verification code.');
-                    sessionStorage.setItem('verification_email', email);
-                    setTimeout(() => {
-                        window.location.href = '/verify-email';
-                    }, 2000);
-                    return;
                 } else {
-                    // Login failed
-                    showError(data.message || 'Invalid email or password');
+                    showError(result.message || 'Login failed. Please try again.');
                     loginBtn.disabled = false;
                     loginBtn.textContent = 'Login';
                 }
 
             } catch (error) {
-                // Network or other error
-                console.error('Error:', error);
-                if (error.status === 403) {
-                    showError('Email not verified. Please verify your email first.');
-                } else {
-                    showError('Connection error. Please try again.');
-                }
+                console.error('Login error:', error);
+                showError(error.message || 'An error occurred. Please try again.');
                 loginBtn.disabled = false;
                 loginBtn.textContent = 'Login';
             }

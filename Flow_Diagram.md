@@ -36,7 +36,7 @@ START
   ▼
 [Generate verification code]
   │  • Random 6-digit code
-  │  • Set expiration (10 min)
+  │  • Set expiration (20 min)
   │  • Store in database
   ▼
 [Send verification email]

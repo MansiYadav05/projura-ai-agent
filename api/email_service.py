@@ -37,7 +37,7 @@ class EmailService:
             print(f"\nMOCK EMAIL MODE - Verification Code for {recipient_email}: {code}")
             return True
         
-        # Try SMTP
+
         return self._send_via_smtp(recipient_email, user_name, code, email_type="verification")
     
     def _send_via_smtp(self, recipient_email: str, user_name: str, code: str, email_type: str = "verification") -> bool:
@@ -139,5 +139,4 @@ class EmailService:
         return (datetime.utcnow() + timedelta(minutes=minutes)).isoformat()
 
 
-# Initialize email service
 email_service = EmailService()

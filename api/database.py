@@ -8,7 +8,6 @@ import json
 from typing import Dict, List, Optional
 
 class Database:
-    """Database handler for project tracking"""
     
     def __init__(self, db_path='projects.db'):
         self.db_path = db_path
@@ -17,7 +16,7 @@ class Database:
     def get_connection(self):
         """Get database connection"""
         conn = sqlite3.connect(self.db_path)
-        conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+        conn.row_factory = sqlite3.Row  
         return conn
     
     def init_database(self):
@@ -25,7 +24,7 @@ class Database:
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # Create users table for authentication
+        # Users table for authentication
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +37,7 @@ class Database:
             )
         ''')
         
-        # Create email_verification table for verification codes
+        # email_verification table for verification codes
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS email_verification (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,7 +50,7 @@ class Database:
             )
         ''')
         
-        # Create projects table
+        # projects table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS projects (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +67,7 @@ class Database:
             )
         ''')
         
-        # Create project_analysis table
+        # project_analysis table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS project_analysis (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +81,7 @@ class Database:
             )
         ''')
         
-        # Create project_milestones table
+        # project_milestones table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS project_milestones (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -113,7 +112,7 @@ class Database:
         conn.commit()
         conn.close()
     
-    # ===== PROJECT CRUD OPERATIONS =====
+    #  PROJECT CRUD OPERATIONS
     
     def create_project(self, user_id: str, project_data: Dict) -> int:
         """Create a new project"""
@@ -172,7 +171,7 @@ class Database:
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # Build dynamic update query
+        # Dynamic update query
         set_clause = ', '.join([f"{key} = ?" for key in updates.keys()])
         values = list(updates.values())
         values.append(project_id)
@@ -199,7 +198,7 @@ class Database:
         conn.commit()
         conn.close()
     
-    # ===== PROJECT ANALYSIS OPERATIONS =====
+    # PROJECT ANALYSIS OPERATIONS 
     
     def save_analysis(self, project_id: int, analysis_type: str, 
                      analysis_data: Dict, ai_recommendation: str, 
@@ -253,7 +252,7 @@ class Database:
         analyses = self.get_project_analyses(project_id)
         return analyses[0] if analyses else None
     
-    # ===== MILESTONE OPERATIONS =====
+    # MILESTONE OPERATIONS 
     
     def add_milestone(self, project_id: int, milestone_data: Dict) -> int:
         """Add a milestone to project"""
@@ -310,7 +309,7 @@ class Database:
         conn.commit()
         conn.close()
     
-    # ===== PROGRESS TRACKING =====
+    #  PROGRESS TRACKING 
     
     def update_progress(self, project_id: int, progress_data: Dict):
         """Update project progress"""
@@ -368,7 +367,7 @@ class Database:
         
         return dict(row) if row else None
     
-    # ===== STATISTICS =====
+    # STATISTICS 
     
     def get_user_statistics(self, user_id: str) -> Dict:
         """Get user project statistics"""
@@ -413,7 +412,7 @@ class Database:
             'completed_milestones': completed_milestones
         }
     
-    # ===== USER AUTHENTICATION =====
+    # USER AUTHENTICATION 
     
     def create_user(self, email: str, name: str, password_hash: str) -> Dict:
         """Create a new user account"""
@@ -519,5 +518,5 @@ class Database:
         return False
 
 
-# Initialize database instance
+# Initialize database 
 db = Database()

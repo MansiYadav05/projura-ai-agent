@@ -1,4 +1,4 @@
-""" Project AI Agent using Flask with Built-in Tools, Custom Tools, and Improved Memory """
+""" Project AI Agent using Flask """
 
 from flask import Flask, render_template, request, jsonify, session, redirect
 import os
@@ -17,16 +17,22 @@ from email_validator import validate_email, EmailNotValidError
 from email_service import email_service
 from cors_handler import cors_required, add_cors_headers, validate_origin
 
-# Load environment variables
+
 load_dotenv()
 
 app = Flask(__name__, template_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates')), static_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'static')),
     static_url_path='/static')
 app.secret_key = secrets.token_hex(16)
-app.permanent_session_lifetime = timedelta(days=7)  # Remember me duration
+app.permanent_session_lifetime = timedelta(days=7)  
 
+firebase_config = {
+    'apiKey': os.getenv('FIREBASE_API_KEY'),
+    'authDomain': os.getenv('FIREBASE_AUTH_DOMAIN'),
+    'projectId': os.getenv('FIREBASE_PROJECT_ID'),
+    'appId': os.getenv('FIREBASE_APP_ID'),
+}
 
-# Global CORS Handler - Add CORS headers to all responses
+# Global CORS Handler 
 @app.before_request
 def handle_preflight():
     """Handle preflight OPTIONS requests for CORS"""
@@ -42,7 +48,6 @@ def after_request(response):
     return add_cors_headers(response)
 
 
-# Configure Gemini API
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
 
@@ -51,13 +56,12 @@ JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-secret-key-change-in-producti
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24
 
-# In-memory storage for sessions
 SESSION_STORE = {}
 USER_PREFERENCES = {}
 
 # In-memory storage for projects
-PROJECTS_STORE = {}  # {user_id: {project_id: project_data}}
-PROJECT_ID_COUNTER = {}  # {user_id: counter}
+PROJECTS_STORE = {}  
+PROJECT_ID_COUNTER = {}  
 
 
 # JWT Authentication Functions
@@ -126,7 +130,7 @@ class BudgetCalculatorTool:
             "ai_ml": 1200,
             "data_science": 1000,
             "game_development": 900,
-            "iot": 700,
+            "iot": 900,
             "blockchain": 1500,
             "default": 600
         }
@@ -264,15 +268,14 @@ class WebSearchTool:
     def search_tech_trends(query: str) -> str:
         """Search for latest tech trends (simulated - integrate with real API)"""
         
-        # In production, integrate with actual search API
-        # For now, using Gemini to provide trend insights
+
         model = genai.GenerativeModel(model_name="models/gemini-2.5-flash")
         
         prompt = f"""
         Provide the latest trends and insights about: {query}
         
         Focus on:
-        1. Current industry trends (2024-2025)
+        1. Current industry trends (2025-2026)
         2. Popular technologies and frameworks
         3. Best practices
         4. Emerging patterns
@@ -319,7 +322,7 @@ class SessionManager:
             "timestamp": datetime.now().isoformat(),
             "action": action,
             "input": data,
-            "output": result[:500]  # Store first 500 chars
+            "output": result[:]
         }
         
         session_data["conversation_history"].append(entry)
@@ -403,7 +406,7 @@ class EnhancedProjectIdeasAgent:
         
         For each project idea, provide:
         1. Project Name
-        2. Brief Description (2-3 sentences)
+        2. Brief Description (2-5 sentences)
         3. Key Technologies Required
         4. Estimated Timeline
         5. Learning Outcomes
@@ -548,10 +551,9 @@ class EnhancedProjectIdeasAgent:
             }
 
 
-# Initialize enhanced agent
 agent = EnhancedProjectIdeasAgent()
 
-# ===== AUTHENTICATION ROUTES =====
+#  AUTHENTICATION ROUTES 
 
 @app.route('/')
 def login_page():
@@ -569,7 +571,7 @@ def signup_page():
     if session.get('logged_in'):
         return redirect('/dashboard')
     
-    return render_template('signup.html')
+    return render_template('signup.html', firebase_config=firebase_config)
 
 
 @app.route('/api/signup', methods=['POST'])
@@ -609,7 +611,6 @@ def signup():
     if existing_user:
         return jsonify({'success': False, 'message': 'Email already registered. Please login or use a different email'}), 409
     
-    # Hash password
     password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
     # Create user
@@ -698,7 +699,7 @@ def resend_code():
     
     # Generate new verification code
     code = email_service.generate_verification_code()
-    expires_at = email_service.get_expiration_time(minutes=10)
+    expires_at = email_service.get_expiration_time(minutes=20)
     
     db.create_verification_code(email, code, expires_at)
     email_service.send_verification_email(email, user['name'], code)
@@ -716,7 +717,7 @@ def login():
     if request.method == 'GET':
         if session.get('logged_in'):
             return redirect('/dashboard')
-        return render_template('login.html')
+        return render_template('login.html', firebase_config=firebase_config)
     
     # Handle POST request for login
     data = request.get_json(force=True)
@@ -778,7 +779,7 @@ def verify_email_page():
     if session.get('logged_in'):
         return redirect('/dashboard')
     
-    return render_template('verify_email.html')
+    return render_template('verify_email.html', firebase_config=firebase_config)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -1020,7 +1021,7 @@ def clear_history():
     return jsonify({'success': True, 'message': 'History cleared'})
 
 
-# ==================== PROJECT TRACKER ENDPOINTS ====================
+# PROJECT TRACKER ENDPOINTS 
 
 @app.route('/api/projects', methods=['GET'])
 @token_required

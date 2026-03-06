@@ -1,22 +1,42 @@
 # Projura Project Ideas AI Agent 🚀
 
-An intelligent AI agent powered by Google's Gemini API with **built-in tools**, **custom tools**, **advanced memory management**, and **secure email authentication** that helps you:
+An intelligent AI agent powered by Google's Gemini API with **built-in tools**, **custom tools**, **advanced memory management**, and **secure Firebase authentication with email verification** that helps you:
 - 🎯 Generate innovative project ideas with real-time trend research
 - 🗺️ Create detailed roadmaps with GitHub project analysis
 - ✅ Assess project feasibility with skill assessment and budget calculation
 - 💾 Track your session history with timestamps
 - 🛠️ Use standalone tools for quick calculations
-- 🔐 Secure registration and email-verified authentication system
+- 🔐 Secure Firebase email/password authentication with email verification system
 
 ## 🌟 Key Features
 
-### Authentication System (🔐 NEW!)
-- **Email Registration**: Secure signup with name, email, and password
-- **Email Verification**: Automatic 6-digit verification code sent via email
+### Firebase Authentication System (🔐 NEW!)
+- **Email/Password Authentication**: Secure signup and login using Firebase Authentication
+- **Email Verification**: Automatic email verification links sent via Firebase
+- **Email Verification Enforcement**: Users cannot login until email is verified
+- **Password Security**: Firebase handles password encryption and security automatically
+- **Persistent Sessions**: Local storage persistence for logged-in users
+- **User Profile Management**: Firebase user profiles with displayName support
+- **Modular SDK**: Uses Firebase SDK v9+ (modular/ESM imports)
+- **Local & Production Ready**: Works seamlessly on localhost and Render deployment
+- **CORS-Secure**: Proper handling of cross-origin requests from Firebase
+
+### Legacy Authentication System
+- **Email Registration**: Secure signup with name, email, and password (Flask-based)
+- **Email Verification**: 6-digit verification codes sent via email
 - **Secure Login**: Password hashing with bcrypt
 - **JWT Token Management**: Secure session management with JWT tokens
 - **User Profiles**: Persistent user data storage
 - **Session Management**: Remember user login across sessions
+
+### CORS Protection (🔐 NEW!)
+- **Origin Validation**: Validates request origins against whitelist
+- **Security Headers**: Implements comprehensive CORS security headers
+- **Preflight Handling**: Automatic OPTIONS request handling
+- **Credential Support**: Secure credential transmission with validation
+- **Configurable Origins**: Easy setup via `.env` file
+- **Environment-based Rules**: Different rules for development vs production
+- **Error Handling**: CORS-aware error responses with proper headers
 
 ### Built-in Tools
 - **Web Search / Tech Trends Research**: Automatically searches for latest technology trends when generating ideas
@@ -80,7 +100,14 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
    - JWT token-based session management
    - Multi-user support with isolated data
 
-6. **Basic Observability** 
+6. **CORS Implementation (NEW!)**
+   - Cross-Origin Resource Sharing with origin validation
+   - Dynamic CORS header management
+   - Preflight request handling via OPTIONS
+   - Environment-based configuration (dev vs prod)
+   - Comprehensive security headers
+
+7. **Basic Observability** 
    - Interaction counting
    - Session tracking
    - Error handling and logging
@@ -90,23 +117,31 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 
 ```
 projura-agent/
-├── main.py                    # CLI version of the agent
-├── web_agent.py               # Flask web application with auth & tools
-├── database.py                # SQLite database management & models
-├── email_service.py           # Email sending and verification system
-├── jwt_manager.js             # JWT token management (frontend)
-├── requirements.txt           # Python dependencies
+├── api/
+│   ├── index.py               # Flask web application with auth & tools
+│   ├── database.py            # SQLite database management & models
+│   ├── email_service.py       # Email sending and verification system
+│   ├── cors_handler.py        # CORS validation and header management
+│   └── __pycache__/
+├── static/
+│   ├── firebase.js            # Firebase initialization (v9+) (NEW!)
+│   ├── auth.js                # Firebase authentication functions (NEW!)
+│   ├── cors_examples.js       # CORS usage examples
+│   ├── cors_validator.js      # CORS validation utility
+│   └── jwt_manager.js         # JWT token management
 ├── templates/
 │   ├── index.html             # Main dashboard (after auth)
-│   ├── login.html             # Login page
-│   ├── signup.html            # User registration page
-│   ├── verify_email.html      # Email verification page
+│   ├── login.html             # Login page (Firebase)
+│   ├── signup.html            # User registration page (Firebase)
+│   ├── verify_email.html      # Email verification page (Firebase)
 │   └── history.html           # Session history page
+├── FIREBASE_SETUP.md          # Complete Firebase setup guide (NEW!)
 ├── Flow_Diagram.md            # Authentication flow diagrams
 ├── README_AUTHENTICATION.md   # Authentication system docs
-├── LICENSE                    # MIT License
 ├── README.md                  # This file
-└── __pycache__/               # Python cache directory
+├── requirements.txt           # Python dependencies
+├── .env.example               # Environment variables template
+└── LICENSE                    # MIT License
 ```
 
 
@@ -151,7 +186,7 @@ SMTP_PASSWORD=your_app_password
 ### 4. Run the Application
 
 
-python web_agent.py
+python api/index.py
 
 
 Then open your browser and navigate to:
@@ -347,6 +382,81 @@ Save user preferences
 **GET `/preferences`**
 Retrieve user preferences
 
+### CORS Configuration & Implementation
+
+**CORS Handler Functions:**
+
+1. **`validate_origin(origin)`** - Validates if request origin is in allowed list
+   - Checks exact origin match against `ALLOWED_ORIGINS`
+   - Returns `True` for valid origins, `False` otherwise
+   - In development mode, allows requests without origin header
+
+2. **`add_cors_headers(response, origin)`** - Adds CORS headers to responses
+   - Sets `Access-Control-Allow-Origin` header for valid origins
+   - Configures allowed methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+   - Sets allowed headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, Accept, Origin
+   - Enables credentials with: `Access-Control-Allow-Credentials: true`
+   - Caches preflight responses for 3600 seconds (1 hour)
+   - Exposes: Content-Type, Authorization, X-Total-Count headers
+
+3. **`@cors_required`** - Decorator for CORS-protected endpoints
+   - Handles OPTIONS preflight requests automatically
+   - Adds CORS headers to all responses
+   - Maintains proper HTTP status codes
+   - Handles both tuple and non-tuple return values
+
+4. **`cors_error_handler(error_code)`** - CORS-aware error responses
+   - Creates error responses with proper CORS headers
+   - Returns consistent error format with status codes
+
+**Allowed CORS Origins (configurable via `.env`):**
+```
+http://localhost:5000
+http://localhost:3000
+http://127.0.0.1:5000
+http://127.0.0.1:3000
+https://yourdomain.com (production only)
+https://www.yourdomain.com (production only)
+```
+
+**Environment Variables for CORS:**
+```
+FRONTEND_URL=http://localhost:5000
+ENVIRONMENT=development  # or 'production'
+```
+
+**Example CORS Headers in Response:**
+```
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token, Accept, Origin
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 3600
+Access-Control-Expose-Headers: Content-Type, Authorization, X-Total-Count
+```
+
+### Using CORS with Flask Routes
+
+**Protected Route Example:**
+```python
+@app.route('/protected-endpoint', methods=['POST'])
+@cors_required
+@token_required
+def protected_endpoint():
+    # Your route logic
+    return jsonify({'data': 'response'})
+```
+
+**How CORS Works in This Project:**
+1. Client sends preflight OPTIONS request
+2. `cors_required` decorator intercepts it
+3. `validate_origin()` checks if origin is allowed
+4. `add_cors_headers()` adds CORS response headers
+5. Client receives response with proper CORS headers
+6. Actual request (GET/POST/etc.) is sent
+7. `cors_required` adds CORS headers to response
+8. Client receives protected resource
+
 ### Tool Endpoints
 
 **POST `/tools/github_search`**
@@ -377,12 +487,31 @@ Retrieve user preferences
 
 ## 🎯 Advanced Features
 
+### CORS (Cross-Origin Resource Sharing) Implementation
+- **Origin Validation**: Validates requests from allowed origins
+- **Secure Headers**: Implements comprehensive CORS security headers
+- **Preflight Handling**: Automatic handling of OPTIONS preflight requests
+- **Credential Support**: Secure credential transmission with `Access-Control-Allow-Credentials`
+- **Header Whitelist**: Explicit control over allowed request/response headers
+- **Cache Control**: Preflight response caching (1 hour default)
+- **Environment-based Configuration**: Different rules for development vs production
+- **Error Handling**: CORS-aware error responses
+
+**CORS Features:**
+- ✅ Validates request origin before allowing
+- ✅ Allows specified HTTP methods: GET, POST, PUT, DELETE, OPTIONS, PATCH
+- ✅ Supports custom headers: Content-Type, Authorization, X-Requested-With, X-CSRF-Token
+- ✅ Exposes headers to clients: Content-Type, Authorization, X-Total-Count
+- ✅ Works with credentials/cookies: `Access-Control-Allow-Credentials: true`
+- ✅ Configurable allowed origins via `.env` file
+
 ### Authentication & Security
 - **Email-based Registration**: Simple signup with email verification
 - **Password Security**: Bcrypt hashing with salt
 - **JWT Tokens**: Stateless authentication with expiration
 - **Email Verification**: Time-limited verification codes (10 min default)
 - **Session Management**: Secure session tracking per user
+- **CORS Protection**: Cross-origin request validation and control
 
 ### Session Management
 - Every interaction is timestamped and associated with user
@@ -443,6 +572,50 @@ CREATE TABLE email_verification (
 
 
 ## 💻 Technical Architecture
+
+### Key Functions & Implementation
+
+**API Functions:**
+- `generate_jwt_token(username)` - Generates JWT tokens for authenticated users with 24-hour expiration
+- `verify_jwt_token(token)` - Verifies JWT tokens and extracts payload
+- `token_required(f)` - Decorator for protecting routes with JWT authentication
+- `generate_ideas(domain, skill_level, constraints, use_trends)` - Generates 5 project ideas with optional trend research
+- `create_roadmap(project_description, check_similar)` - Creates detailed roadmaps with GitHub project analysis
+- `assess_feasibility(project_description, available_time, current_skills, budget, project_type)` - Comprehensive feasibility analysis with tools
+- `session_summary()` - Returns user's complete session history and statistics
+
+**Authentication Functions:**
+- `signup()` - User registration with email validation
+- `verify_email()` - Email verification with time-limited codes
+- `login()` - User login with JWT token generation
+- `logout()` - User logout and session invalidation
+- `resend_verification()` - Resend verification code to email
+
+**CORS Functions (cors_handler.py):**
+- `validate_origin(origin)` - Validates request origins against whitelist
+- `add_cors_headers(response, origin)` - Adds CORS security headers to responses
+- `@cors_required` - Decorator for CORS-protected endpoints
+- `cors_error_handler(error_code)` - Generates CORS-aware error responses
+
+**Tool Functions:**
+- `search_tech_trends(query)` - Web search for technology trends and research
+- `search_similar_projects(query)` - GitHub API integration for finding similar projects
+- `calculate_budget(project_type, duration_months, team_size)` - Budget estimation with detailed breakdown
+- `assess_skills(current_skills, required_skills)` - Skill gap analysis and learning recommendations
+
+**Database Functions (database.py):**
+- `init_db()` - Initialize database with all required tables
+- `add_user(name, email, password_hash, email_verified)` - Add new user to database
+- `get_user_by_email(email)` - Retrieve user by email
+- `update_user_verified(email)` - Mark user as email verified
+- `add_session(user_id, action, input_data, result)` - Store interaction in session history
+- `get_user_sessions(user_id)` - Retrieve all user sessions
+- `add_verification_code(email, code)` - Store email verification code
+- `verify_code(email, code)` - Validate email verification code
+
+**Email Functions (email_service.py):**
+- `send_verification_email(to_email, code)` - Send verification code via email or display in console
+- `send_notification(to_email, subject, message)` - Send general email notifications
 
 ### System Architecture
 
@@ -577,7 +750,17 @@ By examining this project, you'll learn:
 
 ## 🔐 Security Considerations
 
-- **API Key Management**: Never commit `.env` file to Git (already in .gitignore)
+### CORS Security Best Practices
+- **Strict Origin Validation**: Only allow origins you trust - never use wildcard `*` in production
+- **Development vs Production**: Use flexible rules for development, strict rules for production
+- **Preflight Caching**: 1-hour caching reduces repeated preflight requests
+- **Credential Handling**: Only enable credentials when necessary and from trusted origins
+- **Header Whitelisting**: Explicitly list allowed headers rather than allowing all
+- **Error Handling**: CORS errors should not expose sensitive system information
+- **Environment Variables**: Keep allowed origins in `.env` for easy configuration
+- **Regular Updates**: Monitor CORS specifications for security improvements
+
+### API Key Management: Never commit `.env` file to Git (already in .gitignore)
 - **Password Security**: Uses bcrypt hashing with salt (industry standard)
 - **Email Verification**: Prevents spam and ensures valid email addresses
 - **JWT Tokens**: Secure, expiring tokens with configurable duration
@@ -589,25 +772,33 @@ By examining this project, you'll learn:
 
 ## 📝 Best Practices
 
-1. **For Authentication:**
+1. **For CORS Configuration:**
+   - In development: Set `ENVIRONMENT=development` for flexible testing
+   - In production: Explicitly list trusted origins only, never use `*`
+   - Use HTTPS-only origins in production
+   - Add new origins via `.env` `FRONTEND_URL` variable
+   - Apply `@cors_required` decorator to routes needing cross-origin access
+   - Monitor CORS errors in browser console for debugging
+
+2. **For Authentication:**
    - Always verify email before allowing login
    - Use strong passwords (minimum 6 characters, recommended 12+)
    - Regenerate JWT tokens periodically
    - Implement logout functionality
 
-2. **For Best Results:**
+3. **For Best Results:**
    - Be specific in project descriptions
    - Provide realistic time and skill assessments
    - Use the trend research feature for cutting-edge ideas
    - Check similar GitHub projects before starting
 
-3. **Tool Usage:**
+4. **Tool Usage:**
    - Use GitHub search to learn from existing projects
    - Use budget calculator in early planning stages
    - Use skill assessment to create learning roadmaps
    - Review session history to track your planning journey
 
-4. **Workflow Recommendation:**
+5. **Workflow Recommendation:**
    ```
    1. Sign Up & Verify Email → Secure account
    2. Login → Access personalized dashboard
@@ -714,11 +905,44 @@ Current system capabilities:
 - Data should persist across server restarts
 - If lost, check database file permissions
 
+**CORS Error: "Access to XMLHttpRequest from origin blocked"**
+- Check that your frontend origin is in `ALLOWED_ORIGINS` in `cors_handler.py`
+- Verify `FRONTEND_URL` in `.env` is correct
+- Restart Flask server after changing CORS configuration
+- Check browser console for exact origin value
+- Ensure request includes `Authorization` header if protected
+
+**CORS Preflight Failing (OPTIONS request returns 401/403)**
+- CORS preflight requests should NOT require authentication
+- Check that `@cors_required` is placed before `@token_required`
+- Use: `@cors_required` → `@token_required` on protected routes
+- Preflight responses should always return 200 status code
+
+**CORS Works Locally but Not in Production**
+- Verify `ENVIRONMENT=production` is set in `.env`
+- Add production domain to `ALLOWED_ORIGINS` with HTTPS: `https://yourdomain.com`
+- Check that production domain matches exactly (no www mismatch)
+- Run with HTTPS in production (not HTTP)
+
+**"credentials mode is 'include'" warning**
+- Browser warning about credentials with CORS
+- This is expected when `Access-Control-Allow-Credentials: true`
+- Ensure `Access-Control-Allow-Origin` is NOT wildcard `*` when using credentials
+- Both frontend and backend must explicitly allow credentials
+
+**OPTIONS Request Getting 404 Not Found**
+- Ensure Flask handles OPTIONS requests at route level
+- `@cors_required` decorator handles this automatically
+- Check route is not requiring authentication before CORS check
+- Use `@cors_required` at the top of decorator chain
+
 ## 📚 Resources
 
 - [Google Gemini API Docs](https://ai.google.dev/docs)
 - [Flask Documentation](https://flask.palletsprojects.com/)
 - [GitHub API Documentation](https://docs.github.com/en/rest)
+- [CORS Deep Dive](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [CORS Best Practices](https://web.dev/cross-origin-resource-sharing/)
 - [Bcrypt Security](https://pypi.org/project/bcrypt/)
 - [JWT Authentication](https://tools.ietf.org/html/rfc7519)
 - [Prompt Engineering Guide](https://www.promptingguide.ai/)

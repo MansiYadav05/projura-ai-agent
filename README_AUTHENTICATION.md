@@ -63,7 +63,7 @@ pip install -r requirements.txt
 
 ### Step 2: Start the Application
 bash
-python web_agent.py
+python api/index.py
 
 
 ### Step 3: Access the Application
@@ -330,7 +330,7 @@ Read these files for detailed information:
 Your authentication system is **ready to use**. Start by running:
 
 ```bash
-python web_agent.py
+python api/index.py
 ```
 
 Then visit: **http://localhost:5000/signup**
@@ -339,7 +339,6 @@ Then visit: **http://localhost:5000/signup**
 
 ---
 
-**Implementation Date**: January 2025  
+**Implementation Date**: January 2026
 **Version**: 1.0  
-**Status**: ✅ Production Ready  
-**Support**: See documentation files for help
+**Status**: ✅ Production Ready

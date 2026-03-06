@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(100deg, #ff6b9d 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -576,8 +576,8 @@
         }
     </style>
     <!-- CORS Validator for cross-origin request validation -->
-     <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
-     <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
 
     <script src="static/cors_validator.js"></script>
     <!-- JWT Manager for authentication token handling -->
@@ -764,9 +764,9 @@
                 <div class="form-group">
                     <label for="budget">Budget</label>
                     <select id="budget">
-                        <option value="Limited">Limited ($0-100)</option>
-                        <option value="Moderate">Moderate ($100-500)</option>
-                        <option value="Flexible">Flexible ($500+)</option>
+                        <option value="Limited">Limited (&#8377 0-100)</option>
+                        <option value="Moderate">Moderate (&#8377 100-500)</option>
+                        <option value="Flexible">Flexible (&#8377 500+)</option>
                     </select>
                 </div>
 
@@ -898,9 +898,9 @@
                             <div class="form-group">
                                 <label for="tracker-budget">Budget</label>
                                 <select id="tracker-budget">
-                                    <option value="Limited">Limited ($0-100)</option>
-                                    <option value="Moderate">Moderate ($100-500)</option>
-                                    <option value="Flexible">Flexible ($500+)</option>
+                                    <option value="Limited">Limited (&#8377 0-100)</option>
+                                    <option value="Moderate">Moderate (&#8377 100-500)</option>
+                                    <option value="Flexible">Flexible (&#8377 500+)</option>
                                 </select>
                             </div>
                         </div>
@@ -950,7 +950,6 @@
 
             return text
 
-                // Convert **bold** to <strong>
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
 
                 // Convert line breaks into <br>
@@ -1151,7 +1150,7 @@
             submitBtn.innerHTML = 'Create Roadmap';
         });
 
-        // Assess Feasibility Form
+
         document.getElementById('feasibility-form').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1260,19 +1259,19 @@
                         document.getElementById('budget-breakdown').innerHTML = `
                             <div class="budget-item">
                                 <h5>Total Budget</h5>
-                                <div class="amount">$${budget.total_budget}</div>
+                                <div class="amount">&#8377 ${budget.total_budget}</div>
                             </div>
                             <div class="budget-item">
                                 <h5>Development</h5>
-                                <div class="amount">$${budget.breakdown.development}</div>
+                                <div class="amount">&#8377 ${budget.breakdown.development}</div>
                             </div>
                             <div class="budget-item">
                                 <h5>Infrastructure</h5>
-                                <div class="amount">$${budget.breakdown.infrastructure}</div>
+                                <div class="amount">&#8377 ${budget.breakdown.infrastructure}</div>
                             </div>
                             <div class="budget-item">
                                 <h5>Monthly Rate</h5>
-                                <div class="amount">$${budget.monthly_burn_rate}</div>
+                                <div class="amount">&#8377 ${budget.monthly_burn_rate}</div>
                             </div>
                         `;
                     }
@@ -1287,145 +1286,6 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Assess Feasibility';
         });
-
-        // GitHub Search Tool
-        // document.getElementById('github-search-form').addEventListener('submit', async (e) => {
-        //     e.preventDefault();
-        //     const query = document.getElementById('github_query').value;
-        //     const resultDiv = document.getElementById('github-search-results');
-
-        //     resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Searching GitHub...</div>';
-        //     resultDiv.classList.add('show');
-
-        //     try {
-        //         const response = await fetch('/tools/github_search', {
-        //             method: 'POST',
-        //             headers: { 'Content-Type': 'application/json' },
-        //             body: JSON.stringify({ query, max_results: 5 })
-        //         });
-
-        //         const result = await response.json();
-        //         let html = `<h4>${result.message}</h4>`;
-
-        //         result.projects.forEach(proj => {
-        //             html += `
-        //                 <div class="github-project">
-        //                     <h5>${proj.name} ⭐ ${proj.stars}</h5>
-        //                     <p>${proj.description}</p>
-        //                     <p><strong>Language:</strong> ${proj.language} | 
-        //                        <a href="${proj.url}" target="_blank">View</a></p>
-        //                 </div>
-        //             `;
-        //         });
-
-        //         resultDiv.innerHTML = html;
-        //     } catch (error) {
-        //         resultDiv.innerHTML = 'Error: ' + error.message;
-        //     }
-        // });
-
-        // Budget Calculator Tool
-        // document.getElementById('budget-calc-form').addEventListener('submit', async (e) => {
-        //     e.preventDefault();
-        //     const resultDiv = document.getElementById('budget-calc-results');
-
-        //     resultDiv.innerHTML = '<div class="loading">Calculating...</div>';
-        //     resultDiv.classList.add('show');
-
-        //     const data = {
-        //         project_type: document.getElementById('calc_project_type').value,
-        //         duration_months: parseInt(document.getElementById('calc_duration').value),
-        //         team_size: 1
-        //     };
-
-        //     try {
-        //         const response = await fetch('/tools/budget_calculator', {
-        //             method: 'POST',
-        //             headers: { 'Content-Type': 'application/json' },
-        //             body: JSON.stringify(data)
-        //         });
-
-        //         const result = await response.json();
-
-        //         resultDiv.innerHTML = `
-        //             <h4>💰 Budget Estimate</h4>
-        //             <div class="budget-breakdown">
-        //                 <div class="budget-item">
-        //                     <h5>Total Budget</h5>
-        //                     <div class="amount">${result.total_budget}</div>
-        //                 </div>
-        //                 <div class="budget-item">
-        //                     <h5>Development</h5>
-        //                     <div class="amount">${result.breakdown.development}</div>
-        //                 </div>
-        //                 <div class="budget-item">
-        //                     <h5>Infrastructure</h5>
-        //                     <div class="amount">${result.breakdown.infrastructure}</div>
-        //                 </div>
-        //                 <div class="budget-item">
-        //                     <h5>Tools & Licenses</h5>
-        //                     <div class="amount">${result.breakdown.tools_and_licenses}</div>
-        //                 </div>
-        //                 <div class="budget-item">
-        //                     <h5>Contingency (20%)</h5>
-        //                     <div class="amount">${result.breakdown.contingency_20_percent}</div>
-        //                 </div>
-        //                 <div class="budget-item">
-        //                     <h5>Monthly Burn Rate</h5>
-        //                     <div class="amount">${result.monthly_burn_rate}</div>
-        //                 </div>
-        //             </div>
-        //         `;
-        //     } catch (error) {
-        //         resultDiv.innerHTML = 'Error: ' + error.message;
-        //     }
-        // });
-
-        // Skill Assessment Tool
-        // document.getElementById('skill-assess-form').addEventListener('submit', async (e) => {
-        //     e.preventDefault();
-        //     const resultDiv = document.getElementById('skill-assess-results');
-
-        //     resultDiv.innerHTML = '<div class="loading">Assessing...</div>';
-        //     resultDiv.classList.add('show');
-
-        //     const currentSkills = document.getElementById('assess_current').value.split(',').map(s => s.trim());
-        //     const requiredSkills = document.getElementById('assess_required').value.split(',').map(s => s.trim());
-
-        //     const data = {
-        //         current_skills: currentSkills,
-        //         required_skills: requiredSkills
-        //     };
-
-        //     try {
-        //         const response = await fetch('/tools/skill_assessment', {
-        //             method: 'POST',
-        //             headers: { 'Content-Type': 'application/json' },
-        //             body: JSON.stringify(data)
-        //         });
-
-        //         const result = await response.json();
-
-        //         resultDiv.innerHTML = `
-        //             <h4>📊 Skill Assessment Results</h4>
-        //             <div class="skill-meter">
-        //                 <div class="skill-meter-fill" style="width: ${result.proficiency_score}%;">
-        //                     ${result.proficiency_score}%
-        //                 </div>
-        //             </div>
-        //             <div style="margin-top: 15px;">
-        //                 <p><strong>Difficulty Level:</strong> ${result.difficulty_level}</p>
-        //                 <p><strong>Matched Skills:</strong> ${result.matched_skills.join(', ') || 'None'}</p>
-        //                 <p><strong>Missing Skills:</strong> ${result.missing_skills.join(', ') || 'None'}</p>
-        //                 <p><strong>Additional Skills You Have:</strong> ${result.additional_skills.join(', ') || 'None'}</p>
-        //                 <p><strong>Estimated Learning Time:</strong> ${result.estimated_learning_time_weeks} weeks</p>
-        //                 <p><strong>Recommendation:</strong> ${result.recommendation}</p>
-        //             </div>
-        //         `;
-        //     } catch (error) {
-        //         resultDiv.innerHTML = 'Error: ' + error.message;
-        //     }
-        // });
 
         // Toggle new project form
         function toggleProjectForm() {
@@ -1707,8 +1567,9 @@
                 <h3 style="margin-bottom: 15px;">Milestones</h3>
         `;
 
-                milestones.forEach(milestone => {
+                milestones.forEach((milestone, index) => {
                     const isCompleted = milestone.status === 'completed';
+                    const totalMilestones = milestones.length;
                     html += `
             <div style = "background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;" >
                     <div>
@@ -1716,7 +1577,7 @@
                         <p style="color: #666; font-size: 0.9em;">${milestone.description || ''}</p>
                     </div>
                     <div>
-                        <button onclick="toggleMilestone(${projectId}, ${milestone.id}, '${milestone.status}')" 
+                        <button onclick="toggleMilestone(${projectId}, ${milestone.id}, '${milestone.status}', ${index}, ${totalMilestones}, JSON.stringify(${JSON.stringify(milestones)}))" 
                                 style="padding: 8px 15px; background: ${isCompleted ? '#4CAF50' : '#2196F3'}; color: white; border: none; border-radius: 6px; cursor: pointer;">
                             ${isCompleted ? '✓ Completed' : 'Mark Complete'}
                         </button>
@@ -1756,7 +1617,25 @@
         }
 
         // Toggle milestone status
-        async function toggleMilestone(projectId, milestoneId, currentStatus) {
+        async function toggleMilestone(projectId, milestoneId, currentStatus, milestoneIndex, totalMilestones, milestonesJson) {
+            // If marking as complete, validate sequential order
+            if (currentStatus !== 'completed') {
+                // Parse the milestones data
+                const allMilestones = JSON.parse(milestonesJson);
+
+                // Check if all previous milestones are completed
+                const allPreviousCompleted = allMilestones.slice(0, milestoneIndex).every(m => m.status === 'completed');
+
+                if (!allPreviousCompleted) {
+                    // Find the first incomplete previous milestone
+                    const incompleteIndex = allMilestones.slice(0, milestoneIndex).findIndex(m => m.status !== 'completed');
+                    const incompleteMilestone = allMilestones[incompleteIndex];
+
+                    alert(`⚠️ Cannot Skip Milestones!\n\nYou must complete the following milestone first:\n\n"${incompleteMilestone.milestone_name}"\n\nPlease complete milestones in order.`);
+                    return;
+                }
+            }
+
             const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
 
             try {
@@ -1867,7 +1746,6 @@
         }
 
         // Load projects when tracker tab is opened
-        // Auto-load projects when page loads
         window.addEventListener('DOMContentLoaded', () => {
             console.log('📄 DOM Content Loaded - setting up...');
             setupEventListeners();

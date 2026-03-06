@@ -301,8 +301,8 @@
         }
     </style>
     <!-- CORS Validator for cross-origin request validation -->
-     <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
-     <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='cors_validator.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='jwt_manager.js') }}"></script> -->
     <script src="static/cors_validator.js"></script>
     <!-- JWT Manager for authentication token handling -->
     <script src="static/jwt_manager.js"></script>
@@ -354,6 +354,26 @@
         </div>
     </div>
 
+    <!-- Firebase SDK v9+ (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Firebase configuration from Flask backend
+        const firebaseConfig = {{ firebase_config | tojson }};
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Export for use in auth.js
+        window.firebaseApp = app;
+        window.firebaseAuth = auth;
+    </script>
+
+    <!-- Firebase Authentication Module -->
+    <script type="module" src="static/auth.js"></script>
+
     <script>
         const form = document.getElementById('verifyForm');
         const alertDiv = document.getElementById('alert');
@@ -363,9 +383,24 @@
         const codeInput = document.getElementById('codeInput');
         let verificationEmail = '';
 
-        // Load email from sessionStorage
-        window.addEventListener('load', () => {
+        // Load email from sessionStorage or authentication state
+        window.addEventListener('load', async () => {
+            // First try sessionStorage (for signup flow)
             verificationEmail = sessionStorage.getItem('verification_email');
+
+            // If not found, try to get from Firebase auth
+            if (!verificationEmail) {
+                try {
+                    const { getCurrentUser } = await import('static/auth.js');
+                    const user = await getCurrentUser();
+                    if (user && user.email) {
+                        verificationEmail = user.email;
+                    }
+                } catch (error) {
+                    console.log('No authenticated user found');
+                }
+            }
+
             if (verificationEmail) {
                 emailInfo.textContent = `Code sent to: ${verificationEmail}`;
                 codeInput.focus();
@@ -406,33 +441,41 @@
             document.getElementById('verifyBtn').disabled = true;
 
             try {
-                const response = await fetch('/api/verify-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: verificationEmail,
-                        code: code
-                    })
-                });
+                // Import verifyEmailWithCode from auth.js
+                const { verifyEmailWithCode, isEmailVerified, getCurrentUser } = await import('static/auth.js');
 
-                const data = await response.json();
+                // Call Firebase email verification
+                const result = await verifyEmailWithCode(code);
 
-                if (data.success) {
+                if (result && result.success) {
                     showAlert('✅ Email verified successfully! Redirecting to login...', 'success');
                     // Clear session storage
                     sessionStorage.removeItem('verification_email');
-                    // Redirect to login
+                    // Redirect to login after 2 seconds
                     setTimeout(() => {
                         window.location.href = '/login';
                     }, 2000);
                 } else {
-                    showAlert(data.message, 'danger');
+                    // Check if already verified
+                    const user = await getCurrentUser();
+                    if (user) {
+                        const verified = await isEmailVerified(user);
+                        if (verified) {
+                            showAlert('✅ Email already verified! Redirecting to login...', 'success');
+                            sessionStorage.removeItem('verification_email');
+                            setTimeout(() => {
+                                window.location.href = '/login';
+                            }, 2000);
+                        } else {
+                            showAlert(result?.message || 'Invalid or expired verification code', 'danger');
+                        }
+                    } else {
+                        showAlert(result?.message || 'Verification failed. Please try again.', 'danger');
+                    }
                 }
             } catch (error) {
-                showAlert('An error occurred. Please try again.', 'danger');
-                console.error('Error:', error);
+                console.error('Verification error:', error);
+                showAlert(error.message || 'An error occurred. Please try again.', 'danger');
             } finally {
                 loadingDiv.style.display = 'none';
                 document.getElementById('verifyBtn').disabled = false;
@@ -448,29 +491,31 @@
             resendBtn.disabled = true;
 
             try {
-                const response = await fetch('/api/resend-code', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: verificationEmail
-                    })
-                });
+                // Import sendVerificationEmail from auth.js
+                const { getCurrentUser, sendVerificationEmail } = await import('static/auth.js');
 
-                const data = await response.json();
+                // Get current user
+                const user = await getCurrentUser();
 
-                if (data.success) {
-                    showAlert('✅ New code sent to your email!', 'success');
-                    startResendTimer();
+                if (user) {
+                    // Send verification email
+                    const result = await sendVerificationEmail(user);
+
+                    if (result && result.success) {
+                        showAlert('✅ New code sent to your email!', 'success');
+                        startResendTimer();
+                    } else {
+                        showAlert(result?.message || 'Failed to resend code. Please try again.', 'danger');
+                        resendBtn.disabled = false;
+                    }
                 } else {
-                    showAlert(data.message, 'danger');
+                    showAlert('User not found. Please sign up again.', 'danger');
                     resendBtn.disabled = false;
                 }
             } catch (error) {
-                showAlert('Failed to resend code. Please try again.', 'danger');
+                console.error('Resend error:', error);
+                showAlert(error.message || 'Failed to resend code. Please try again.', 'danger');
                 resendBtn.disabled = false;
-                console.error('Error:', error);
             }
         }
 
