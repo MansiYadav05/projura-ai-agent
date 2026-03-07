@@ -877,6 +877,9 @@ def firebase_session():
         session['logged_in'] = True
         session['auth_method'] = 'firebase'
         
+        # Generate JWT token for API requests
+        token = generate_jwt_token(email)
+        
         print(f"✅ Firebase session established for: {email}")
         
         return jsonify({
@@ -884,7 +887,8 @@ def firebase_session():
             'message': 'Session established',
             'redirect': '/dashboard',
             'email': email,
-            'name': display_name
+            'name': display_name,
+            'token': token
         }), 200
         
     except Exception as error:

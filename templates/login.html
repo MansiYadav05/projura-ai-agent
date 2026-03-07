@@ -652,6 +652,11 @@
 
                         if (sessionData.success) {
                             console.log('✅ Session established');
+                            // Store JWT token in localStorage for API requests
+                            if (sessionData.token) {
+                                localStorage.setItem('jwt_token', sessionData.token);
+                                console.log('✅ JWT token stored');
+                            }
                             // Redirect to dashboard after session is set
                             setTimeout(() => {
                                 window.location.href = '/dashboard';
