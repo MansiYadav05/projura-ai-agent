@@ -1655,8 +1655,17 @@
                     body: JSON.stringify({ status: newStatus })
                 });
 
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Error updating milestone: ' + (data.error || data.message || 'Unknown error'));
+                    return;
+                }
+
+                console.log('✅ Milestone updated successfully');
                 viewProjectDetails(projectId); // Refresh
             } catch (error) {
+                console.error('Milestone update error:', error);
                 alert('Error updating milestone: ' + error.message);
             }
         }

@@ -876,6 +876,7 @@ def firebase_session():
         session['firebase_uid'] = uid
         session['logged_in'] = True
         session['auth_method'] = 'firebase'
+        session['user_id'] = uid  # Use Firebase UID as user_id for project tracking
         
         # Generate JWT token for API requests
         token = generate_jwt_token(email)
