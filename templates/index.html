@@ -1577,7 +1577,7 @@
                         <p style="color: #666; font-size: 0.9em;">${milestone.description || ''}</p>
                     </div>
                     <div>
-                        <button onclick="toggleMilestone(${projectId}, ${milestone.id}, '${milestone.status}', ${index}, ${totalMilestones}, JSON.stringify(${JSON.stringify(milestones)}))" 
+                        <button onclick="toggleMilestone(${projectId}, ${milestone.id}, '${milestone.status}', ${index}, ${totalMilestones}, '${encodeURIComponent(JSON.stringify(milestones))}')" 
                                 style="padding: 8px 15px; background: ${isCompleted ? '#4CAF50' : '#2196F3'}; color: white; border: none; border-radius: 6px; cursor: pointer;">
                             ${isCompleted ? '✓ Completed' : 'Mark Complete'}
                         </button>
@@ -1620,8 +1620,8 @@
         async function toggleMilestone(projectId, milestoneId, currentStatus, milestoneIndex, totalMilestones, milestonesJson) {
             // If marking as complete, validate sequential order
             if (currentStatus !== 'completed') {
-                // Parse the milestones data
-                const allMilestones = JSON.parse(milestonesJson);
+                // Decode the URL-encoded JSON string
+                const allMilestones = JSON.parse(decodeURIComponent(milestonesJson));
 
                 // Check if all previous milestones are completed
                 const allPreviousCompleted = allMilestones.slice(0, milestoneIndex).every(m => m.status === 'completed');
