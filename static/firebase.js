@@ -1,6 +1,5 @@
 /**
  * Firebase Configuration & Initialization
- * Supports both local development and production (Render) deployments
  * Firebase SDK v9+ (Modular SDK)
  */
 
@@ -11,17 +10,6 @@ import {
     browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-/**
- * Firebase Configuration
- * IMPORTANT: Replace these values with your Firebase project credentials
- * Get these from Firebase Console > Project Settings > Your App
- * 
- * For Render Deployment:
- * - If using environment variables: update window.firebaseConfig values from .env
- * - If using hardcoded values: update directly in this file
- * 
- * ⚠️ SECURITY NOTE: These values are PUBLIC. Never include API_KEY elsewhere.
- */
 
 const firebaseConfig = {
   apiKey: "AIzaSyAtoBPb_TpflYzRAsfMB3wTsKYXoPDmb9U",
@@ -33,10 +21,7 @@ const firebaseConfig = {
   measurementId: "G-4MH9017V52"
 };
 
-/**
- * Override config with environment variables if available
- * For production on Render, set these environment variables in Dashboard
- */
+
 if (typeof window !== 'undefined' && window.firebaseConfig) {
     Object.assign(firebaseConfig, window.firebaseConfig);
 }

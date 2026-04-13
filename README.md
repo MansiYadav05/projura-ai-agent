@@ -1,16 +1,27 @@
-# Projura Project Ideas AI Agent 🚀
+# Projura Project AI Assistant 🚀
 
-An intelligent AI agent powered by Google's Gemini API with **built-in tools**, **custom tools**, **advanced memory management**, and **secure Firebase authentication with email verification** that helps you:
-- 🎯 Generate innovative project ideas with real-time trend research
-- 🗺️ Create detailed roadmaps with GitHub project analysis
-- ✅ Assess project feasibility with skill assessment and budget calculation
-- 💾 Track your session history with timestamps
-- 🛠️ Use standalone tools for quick calculations
-- 🔐 Secure Firebase email/password authentication with email verification system
+Projura is a AI-powered project orchestration platform. Built on the **Google Gemini 2.5 Flash** model, it serves as an intelligent companion for developers and entrepreneurs, transforming vague concepts into actionable, tracked, and feasible project plans.
+
+## 🌟 Core Pillars
+
+### 1. AI Orchestration & Ideation
+*   **Intelligent Idea Generation**: Leveraging real-time tech trends to suggest high-impact project concepts.
+*   **Automated Roadmapping**: Phase-by-phase implementation plans derived from architectural best practices.
+*   **Deep Feasibility Analysis**: Multi-dimensional assessment of technical, time, and resource constraints using custom logic.
+
+### 2. Project Lifecycle Tracking
+*   **Centralized Dashboard**: Manage multiple active projects from a single interface.
+*   **Milestone Management**: Track granular progress through phase-specific deliverables.
+*   **Progress Visualization**: Real-time percentage tracking based on completed milestones.
+
+### 3. Integrated Engineering Tools
+*   **GitHub Intelligence**: Real-time search for similar repositories to avoid reinventing the wheel.
+*   **Budget & Burn Rate Calculator**: Professional financial estimation for infrastructure and development.
+*   **Skill Gap Assessment**: Quantitative analysis of current skills versus project requirements.
 
 ## 🌟 Key Features
 
-### Firebase Authentication System (🔐 NEW!)
+### Firebase Authentication System 
 - **Email/Password Authentication**: Secure signup and login using Firebase Authentication
 - **Email Verification**: Automatic email verification links sent via Firebase
 - **Email Verification Enforcement**: Users cannot login until email is verified
@@ -20,14 +31,6 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 - **Modular SDK**: Uses Firebase SDK v9+ (modular/ESM imports)
 - **Local & Production Ready**: Works seamlessly on localhost and Render deployment
 - **CORS-Secure**: Proper handling of cross-origin requests from Firebase
-
-### Legacy Authentication System
-- **Email Registration**: Secure signup with name, email, and password (Flask-based)
-- **Email Verification**: 6-digit verification codes sent via email
-- **Secure Login**: Password hashing with bcrypt
-- **JWT Token Management**: Secure session management with JWT tokens
-- **User Profiles**: Persistent user data storage
-- **Session Management**: Remember user login across sessions
 
 ### CORS Protection (🔐 NEW!)
 - **Origin Validation**: Validates request origins against whitelist
@@ -72,11 +75,10 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
 
 ## 📊 Concepts Demonstrated
 
-### Currently Implemented
-
-1. **Agent powered by LLM** 
-   - Uses Google's Gemini 2.5 Flash model
-   - Intelligent decision-making and content generation
+1. **Advanced LLM Integration**
+   - **Model**: Gemini 2.5 Flash.
+   - **Context Management**: Maintains session-aware memory for coherent project planning.
+   - **Custom Tool Calling**: LLM-driven execution of budget and skill assessment logic.
 
 2. **Built-in Tools** 
    - Web Search for tech trends
@@ -113,36 +115,54 @@ An intelligent AI agent powered by Google's Gemini API with **built-in tools**, 
    - Error handling and logging
    - User activity logging
 
-## Project Structure
+## 🚀 Tech Stack
 
-```
-projura-agent/
-├── api/
-│   ├── index.py               # Flask web application with auth & tools
-│   ├── database.py            # SQLite database management & models
-│   ├── email_service.py       # Email sending and verification system
-│   ├── cors_handler.py        # CORS validation and header management
-│   └── __pycache__/
-├── static/
-│   ├── firebase.js            # Firebase initialization (v9+) (NEW!)
-│   ├── auth.js                # Firebase authentication functions (NEW!)
-│   ├── cors_examples.js       # CORS usage examples
-│   ├── cors_validator.js      # CORS validation utility
-│   └── jwt_manager.js         # JWT token management
-├── templates/
-│   ├── index.html             # Main dashboard (after auth)
-│   ├── login.html             # Login page (Firebase)
-│   ├── signup.html            # User registration page (Firebase)
-│   ├── verify_email.html      # Email verification page (Firebase)
-│   └── history.html           # Session history page
-├── FIREBASE_SETUP.md          # Complete Firebase setup guide (NEW!)
-├── Flow_Diagram.md            # Authentication flow diagrams
-├── README_AUTHENTICATION.md   # Authentication system docs
-├── README.md                  # This file
-├── requirements.txt           # Python dependencies
-├── .env.example               # Environment variables template
-└── LICENSE                    # MIT License
-```
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend** | HTML5, Tailwind CSS, JavaScript (ES6+) |
+| **Backend** | Python / Flask |
+| **AI Engine** | Google Generative AI (Gemini) |
+| **Authentication** | Firebase Auth + JWT |
+| **Database** | SQLite3 |
+| **Security** | Bcrypt, CORS Validation, JWT |
+
+## 📂 Project Structure
+
+*   `api/index.py`: Core application logic, AI agent implementation, and API endpoints.
+*   `api/database.py`: Database abstraction layer for user and project persistence.
+*   `api/cors_handler.py`: Security middleware for cross-origin resource sharing.
+*   `static/auth.js`: Firebase-to-Backend authentication bridging.
+*   `templates/`: Responsive UI components for Dashboard, History, and Auth.
+
+## 🛠 API Reference
+
+### Project Management
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/projects` | List all tracked projects for the user. |
+| `POST` | `/api/projects` | Create a new project with AI-driven feasibility analysis. |
+| `GET` | `/api/projects/<id>` | Detailed project data including milestones. |
+| `PUT` | `/api/projects/<id>/milestones/<mid>` | Update progress status. |
+
+### AI Agent Operations
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/generate_ideas` | AI idea generation with trend analysis. |
+| `POST` | `/create_roadmap` | Phase-based implementation roadmap. |
+| `POST` | `/assess_feasibility` | Comprehensive constraint assessment. |
+
+## 🚀 Quick Start
+
+1.  **Clone & Install**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2.  **Environment Setup**:
+    Configure your `.env` with `GOOGLE_API_KEY`, `FIREBASE_API_KEY`, and `JWT_SECRET_KEY`.
+3.  **Run**:
+    ```bash
+    python api/index.py
+    ```
 
 
 ## 🚀 Quick Start
@@ -177,28 +197,23 @@ Create a `.env` file in the project root:
 ```
 GOOGLE_API_KEY=your_actual_api_key_here
 JWT_SECRET_KEY=your_secret_key_for_jwt_tokens
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
-SMTP_EMAIL=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
 ```
 
 ### 4. Run the Application
-
-
+```
 python api/index.py
-
+```
 
 Then open your browser and navigate to:
-
-
+```
 http://localhost:5000
+```
 
 
 ### 5. First Time Setup
 
 1. **Create Account**: Click "Sign Up" to register
-2. **Verify Email**: Enter the verification code sent to your email (check console if using mock mode)
+2. **Verify Email**: Click the verification link sent to your email via Firebase
 3. **Login**: Use your credentials to login
 4. **Access Dashboard**: Start generating ideas, roadmaps, and feasibility assessments
 
